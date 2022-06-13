@@ -17,15 +17,26 @@ function init() {
     // シーンを作成
     const scene = new THREE.Scene();
 
+    // グリッド追加
+    const gridHelper = new THREE.GridHelper(100, 10);
+    scene.add(gridHelper);
+
+    // 座標軸追加
+    // X軸は赤、Y軸は緑色、Z軸は青。
+    const axesHelper = new THREE.AxesHelper(100);
+    scene.add(axesHelper);
+
     // カメラを作成
     const camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
-    camera.position.set(0, 0, +1000);
+    camera.position.set(0, 50, 100);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     // 箱を作成
-    const geometry = new THREE.BoxGeometry(500, 500, 500);
-    const material = new THREE.MeshStandardMaterial({ color: 0x0000FF });
+    const geometry = new THREE.BoxGeometry(10, 10, 10);
+    const material = new THREE.MeshStandardMaterial({ color: 0x00FFFF });
     const box = new THREE.Mesh(geometry, material);
-    scene.add(box);
+    box.position.set(20, 20, 20);
+    //scene.add(box);
 
     // 平行光源
     const light = new THREE.DirectionalLight(0xFFFFFF);
