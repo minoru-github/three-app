@@ -1,16 +1,54 @@
 import * as THREE from 'three';
+import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader"
 console.log("Hello World!");
+
+const input_files = document.getElementById("input_files") as HTMLElement;
+const text = document.getElementById("text") as any;
+
+function printType(x: any) {
+    console.log(`${typeof (x)} ${Object.prototype.toString.call(x)}`);
+}
+
+input_files.addEventListener("change", function (event: any) {
+    // https://hakuhin.jp/js/file_reader.html
+    // https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/web-app/repositories/project-web-repository.ts#L24
+    
+    var files = event.target.files;
+
+    //FileReaderオブジェクトの作成
+    const reader = new FileReader();
+
+    // onload = 読み込み完了したときに実行されるイベント
+    reader.onload = (event) => {
+        event.target?.result as ArrayBuffer;
+        console.log(reader.result);
+    };
+
+    // readAsArrayBufferで読み込み(非同期実行)
+    reader.readAsArrayBuffer(files[0]);
+    // テキスト形式で読み込む(非同期実行)
+    //reader.readAsText(file[0]);
+
+    const buffer = files[0].arrayBuffer();
+    buffer.then((data:any) => {
+        // viewオブジェクトへの変換
+        let view_u8 = new Uint8Array(data);
+        console.log(view_u8);
+        text.value = view_u8.slice(0,20);
+    });
+});
 
 window.addEventListener('DOMContentLoaded', init);
 
 const width = 960;
 const height = 540;
+let scene:THREE.Scene;
 function init() {
     // レンダラーを作成
     const renderer = create_renderer();
 
     // シーンを作成
-    const scene = new THREE.Scene();
+    scene = new THREE.Scene();
 
     // カメラを作成
     const camera = create_camera();
@@ -25,11 +63,12 @@ function init() {
 
     // 箱を作成
     const box = create_box();
-    scene.add(box);
+
+    // pcd
+    //load_pcd();
 
     // 平行光源
-    const light = create_light();
-    scene.add(light);
+    create_light();
 
     // 初回実行
     tick();
@@ -66,6 +105,7 @@ function create_box() {
     const material = new THREE.MeshStandardMaterial({ color: 0x00FFFF });
     const box = new THREE.Mesh(geometry, material);
     box.position.set(20, 20, 20);
+    scene.add(box);
     return box;
 }
 
@@ -78,5 +118,20 @@ function create_light() {
     const light = new THREE.DirectionalLight(0xFFFFFF);
     light.intensity = 2; // 光の強さを倍に
     light.position.set(1, 1, 1);
+    scene.add(light);
     return light;
+}
+
+function load_pcd() {
+    const loader = new PCDLoader();
+    loader.setPath("./pcd_frames");
+    loader.load(
+        "/0001/3.pcd",
+        function (points) {
+            points.geometry.center();
+            points.geometry.rotateX(Math.PI);
+            points.name = "sample.pcd";
+            scene.add(points);
+        }
+    );
 }
