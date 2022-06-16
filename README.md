@@ -7,3 +7,8 @@ https://minoru-github.github.io/three-app/
 + 参考
   + https://ics.media/entry/14771/
   + https://threejs.org/
+
++ 使い方
+  + バンドル `npx webpack`
+  + デプロイ `npm run deploy`
+  + ローカルサーバー立ち上げ `npm run start`
