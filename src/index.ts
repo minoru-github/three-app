@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { LoaderUtils } from 'three';
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader"
 console.log("Hello World!");
 
@@ -13,30 +14,43 @@ input_files.addEventListener("change", function (event: any) {
     // https://hakuhin.jp/js/file_reader.html
     // https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/web-app/repositories/project-web-repository.ts#L24
     
-    var files = event.target.files;
+    var files = event.target.files as FileList;
 
-    //FileReaderオブジェクトの作成
-    const reader = new FileReader();
-
-    // onload = 読み込み完了したときに実行されるイベント
-    reader.onload = (event) => {
-        event.target?.result as ArrayBuffer;
-        console.log(reader.result);
-    };
-
-    // readAsArrayBufferで読み込み(非同期実行)
-    reader.readAsArrayBuffer(files[0]);
-    // テキスト形式で読み込む(非同期実行)
-    //reader.readAsText(file[0]);
-
-    const buffer = files[0].arrayBuffer();
-    buffer.then((data:any) => {
-        // viewオブジェクトへの変換
+    const promise = readFile(files[0]);
+    promise.then((data: ArrayBuffer) => {
         let view_u8 = new Uint8Array(data);
-        console.log(view_u8);
-        text.value = view_u8.slice(0,20);
+        let decoded_text = LoaderUtils.decodeText(view_u8);
+        console.log(decoded_text);
+        text.value = decoded_text;
     });
+
+    // const buffer = files[0].arrayBuffer();
+    // buffer.then((data:any) => {
+    //     // viewオブジェクトへの変換
+    //     let view_u8 = new Uint8Array(data);
+    //     console.log(view_u8);
+    //     text.value = view_u8.slice(0,20);
+    // });
 });
+
+// https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/web-app/repositories/project-web-repository.ts#L24
+// https://qiita.com/cheez921/items/41b744e4e002b966391a
+function readFile(file: File) {
+    const promise = new Promise<ArrayBuffer>((resolve, reject) => {
+        //FileReaderオブジェクトの作成
+        const reader = new FileReader();
+        // onload = 読み込み完了したときに実行されるイベント
+        reader.onload = (event) => {
+            resolve(event.target?.result as ArrayBuffer);
+            console.log(reader.result);
+        };
+        // readAsArrayBufferで読み込み(非同期実行)
+        reader.readAsArrayBuffer(file);
+        // テキスト形式で読み込む(非同期実行)
+        //reader.readAsText(file[0]);
+    });
+    return promise;
+}
 
 window.addEventListener('DOMContentLoaded', init);
 
