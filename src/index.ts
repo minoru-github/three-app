@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { LoaderUtils } from 'three';
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader"
 console.log("Hello World!");
 
@@ -10,33 +11,66 @@ function printType(x: any) {
 }
 
 input_files.addEventListener("change", function (event: any) {
-    // https://hakuhin.jp/js/file_reader.html
     // https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/web-app/repositories/project-web-repository.ts#L24
     
-    var files = event.target.files;
+    var files = event.target.files as FileList;
+    const file = files[0];
 
-    //FileReaderオブジェクトの作成
-    const reader = new FileReader();
-
-    // onload = 読み込み完了したときに実行されるイベント
-    reader.onload = (event) => {
-        event.target?.result as ArrayBuffer;
-        console.log(reader.result);
-    };
-
-    // readAsArrayBufferで読み込み(非同期実行)
-    reader.readAsArrayBuffer(files[0]);
-    // テキスト形式で読み込む(非同期実行)
-    //reader.readAsText(file[0]);
-
-    const buffer = files[0].arrayBuffer();
-    buffer.then((data:any) => {
-        // viewオブジェクトへの変換
-        let view_u8 = new Uint8Array(data);
-        console.log(view_u8);
-        text.value = view_u8.slice(0,20);
+    // https://runebook.dev/ja/docs/dom/blob/text
+    const promise = file.text();
+    promise.then((pcdFile: string) => {
+        //console.log(data);
+        text.value = pcdFile;
+        extractData(pcdFile);
     });
 });
+
+type XYZ = {
+    x: number;
+    y: number;
+    z: number;
+}
+
+// https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/editor-module/utils/pcd-util.ts#L43
+// https://www.sejuku.net/blog/21049
+function parseHeader(data: string) {
+    data.indexOf("WIDTH");
+}
+
+// https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/editor-module/utils/pcd-util.ts#L125
+function extractData(pcdFile: string) {
+    const headerOfPoints = "POINTS ";
+    const beginOfPoints = pcdFile.indexOf(headerOfPoints) + headerOfPoints.length;
+    //pcdFile.match(/POINTS (.*)/);
+    // ()で囲まれたところを抽出してくれる
+    const result = pcdFile.match(/POINTS (.*)/);
+    var points = 0;
+    if (result != null) {
+        points = parseInt(result[1]);
+        console.log(points);
+    }
+
+    // とりあえずascii固定
+    // TODO:DATAの検索を正規表現に変える
+    const headerOfData = "DATA ascii\n";
+    const beginOfData = pcdFile.indexOf(headerOfData) + headerOfData.length;
+    const data_vec = pcdFile.slice(beginOfData).split("\n");
+    
+    const xyz_vec = new Array<XYZ>;
+    for (var cnt = 0; cnt < points; cnt++){
+        const data = data_vec[cnt].split(" ");
+        const xyz: XYZ = { x: parseFloat(data[0]), y: parseFloat(data[1]), z: parseFloat(data[2]) };
+        xyz_vec.push(xyz);
+    }
+
+    function debug(xyz_vec:Array<XYZ>) {
+        for (var cnt = 0; cnt < 10; cnt++) {
+            console.log("x:%f, y:%f, z:%f", xyz_vec[cnt].x, xyz_vec[cnt].y, xyz_vec[cnt].z);
+        }
+    }
+
+    return xyz_vec;
+}
 
 window.addEventListener('DOMContentLoaded', init);
 
