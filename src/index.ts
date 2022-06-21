@@ -6,24 +6,30 @@ console.log("Hello World!");
 const input_files = document.getElementById("input_files") as HTMLElement;
 const text = document.getElementById("text") as any;
 
-function printType(x: any) {
-    console.log(`${typeof (x)} ${Object.prototype.toString.call(x)}`);
-}
-
 input_files.addEventListener("change", function (event: any) {
     // https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/web-app/repositories/project-web-repository.ts#L24
     
     var files = event.target.files as FileList;
     const file = files[0];
-
-    // https://runebook.dev/ja/docs/dom/blob/text
-    const promise = file.text();
-    promise.then((pcdFile: string) => {
-        //console.log(data);
-        text.value = pcdFile;
-        extractData(pcdFile);
+    const promise = createDataURL(file);
+    promise.then((path) => {
+        load_pcd(path);
     });
+
+    });
+
+function createDataURL(file: File) {
+    const promise = new Promise<string>((resolve, reject) => {
+        //FileReaderオブジェクトの作成
+        const reader = new FileReader();
+        // onload = 読み込み完了したときに実行されるイベント
+        reader.onload = (event) => {
+            resolve(event.target?.result as string);
+        };
+        reader.readAsDataURL(file);
 });
+    return promise;
+}
 
 type XYZ = {
     x: number;
@@ -96,7 +102,7 @@ function init() {
     scene.add(axesHelper);
 
     // 箱を作成
-    const box = create_box();
+    //const box = create_box();
 
     // pcd
     //load_pcd();
@@ -111,7 +117,7 @@ function init() {
         requestAnimationFrame(tick);
 
         // 箱を回転させる
-        rotate_box(box);
+        //rotate_box(box);
 
         // レンダリング
         renderer.render(scene, camera);
@@ -156,16 +162,15 @@ function create_light() {
     return light;
 }
 
-function load_pcd() {
+function load_pcd(path:string) {
     const loader = new PCDLoader();
-    loader.setPath("./pcd_frames");
     loader.load(
-        "/0001/3.pcd",
-        function (points) {
-            points.geometry.center();
-            points.geometry.rotateX(Math.PI);
-            points.name = "sample.pcd";
-            scene.add(points);
+        path,
+        function (mesh) {
+            //mesh.geometry.center();
+            //mesh.geometry.rotateX(Math.PI);
+            //mesh.name = "sample.pcd";
+            scene.add(mesh);
         }
     );
 }
