@@ -14,25 +14,63 @@ input_files.addEventListener("change", function (event: any) {
     // https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/web-app/repositories/project-web-repository.ts#L24
     
     var files = event.target.files as FileList;
-
     const file = files[0];
 
-    const promise = file.arrayBuffer();
-    promise.then((data: ArrayBuffer) => {
-        // viewオブジェクトへの変換
-        let view_u8 = new Uint8Array(data);
-        let decoded_text = LoaderUtils.decodeText(view_u8);
-        console.log(decoded_text);
-        text.value = decoded_text;
-    })
-
     // https://runebook.dev/ja/docs/dom/blob/text
-    // const promise = file.text();
-    // promise.then((data: string) => {
-    //     console.log(data);
-    //     text.value = data;
-    // });
+    const promise = file.text();
+    promise.then((pcdFile: string) => {
+        //console.log(data);
+        text.value = pcdFile;
+        extractData(pcdFile);
+    });
 });
+
+type XYZ = {
+    x: number;
+    y: number;
+    z: number;
+}
+
+// https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/editor-module/utils/pcd-util.ts#L43
+// https://www.sejuku.net/blog/21049
+function parseHeader(data: string) {
+    data.indexOf("WIDTH");
+}
+
+// https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/editor-module/utils/pcd-util.ts#L125
+function extractData(pcdFile: string) {
+    const headerOfPoints = "POINTS ";
+    const beginOfPoints = pcdFile.indexOf(headerOfPoints) + headerOfPoints.length;
+    //pcdFile.match(/POINTS (.*)/);
+    // ()で囲まれたところを抽出してくれる
+    const result = pcdFile.match(/POINTS (.*)/);
+    var points = 0;
+    if (result != null) {
+        points = parseInt(result[1]);
+        console.log(points);
+    }
+
+    // とりあえずascii固定
+    // TODO:DATAの検索を正規表現に変える
+    const headerOfData = "DATA ascii\n";
+    const beginOfData = pcdFile.indexOf(headerOfData) + headerOfData.length;
+    const data_vec = pcdFile.slice(beginOfData).split("\n");
+    
+    const xyz_vec = new Array<XYZ>;
+    for (var cnt = 0; cnt < points; cnt++){
+        const data = data_vec[cnt].split(" ");
+        const xyz: XYZ = { x: parseFloat(data[0]), y: parseFloat(data[1]), z: parseFloat(data[2]) };
+        xyz_vec.push(xyz);
+    }
+
+    function debug(xyz_vec:Array<XYZ>) {
+        for (var cnt = 0; cnt < 10; cnt++) {
+            console.log("x:%f, y:%f, z:%f", xyz_vec[cnt].x, xyz_vec[cnt].y, xyz_vec[cnt].z);
+        }
+    }
+
+    return xyz_vec;
+}
 
 window.addEventListener('DOMContentLoaded', init);
 
