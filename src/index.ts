@@ -1,14 +1,16 @@
 import * as THREE from 'three';
-import { LoaderUtils } from 'three';
+import { Camera, LoaderUtils, Vector3 } from 'three';
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 console.log("Hello World!");
 
 const inputFiles = document.getElementById("input_files") as HTMLElement;
 const text = document.getElementById("text") as any;
+const canvas = document.getElementById("myCanvas") as HTMLElement;
 
 inputFiles.addEventListener("change", function (event: any) {
     // https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/web-app/repositories/project-web-repository.ts#L24
-    
+
     var files = event.target.files as FileList;
     const file = files[0];
     const promise = createDataURL(file);
@@ -16,7 +18,7 @@ inputFiles.addEventListener("change", function (event: any) {
         loadPcd(path);
     });
 
-    });
+});
 
 function createDataURL(file: File) {
     const promise = new Promise<string>((resolve, reject) => {
@@ -27,7 +29,7 @@ function createDataURL(file: File) {
             resolve(event.target?.result as string);
         };
         reader.readAsDataURL(file);
-});
+    });
     return promise;
 }
 
@@ -61,15 +63,15 @@ function extractData(pcdFile: string) {
     const headerOfData = "DATA ascii\n";
     const beginOfData = pcdFile.indexOf(headerOfData) + headerOfData.length;
     const dataVec = pcdFile.slice(beginOfData).split("\n");
-    
+
     const xyzVec = new Array<XYZ>;
-    for (var cnt = 0; cnt < points; cnt++){
+    for (var cnt = 0; cnt < points; cnt++) {
         const data = dataVec[cnt].split(" ");
         const xyz: XYZ = { x: parseFloat(data[0]), y: parseFloat(data[1]), z: parseFloat(data[2]) };
         xyzVec.push(xyz);
     }
 
-    function debug(xyzVec:Array<XYZ>) {
+    function debug(xyzVec: Array<XYZ>) {
         for (var cnt = 0; cnt < 10; cnt++) {
             console.log("x:%f, y:%f, z:%f", xyzVec[cnt].x, xyzVec[cnt].y, xyzVec[cnt].z);
         }
@@ -82,7 +84,7 @@ window.addEventListener('DOMContentLoaded', init);
 
 const width = 960;
 const height = 540;
-let scene:THREE.Scene;
+let scene: THREE.Scene;
 function init() {
     // レンダラーを作成
     const renderer = createRenderer();
@@ -92,9 +94,11 @@ function init() {
 
     // カメラを作成
     const camera = createCamera();
+    // カメラコントロール作成
+    const controls = createCameraControl(camera);
 
     // グリッド追加
-    const gridHelper = new THREE.GridHelper(200, 40);
+    const gridHelper = new THREE.GridHelper(200, 100);
     scene.add(gridHelper);
 
     // 座標軸追加 X軸は赤、Y軸は緑色、Z軸は青。
@@ -103,9 +107,6 @@ function init() {
 
     // 箱を作成
     //const box = createBox();
-
-    // pcd
-    //load_pcd();
 
     // 平行光源
     createLight();
@@ -118,6 +119,8 @@ function init() {
 
         // 箱を回転させる
         //rotateBox(box);
+
+        controls.update();
 
         // レンダリング
         renderer.render(scene, camera);
@@ -135,9 +138,14 @@ function createRenderer() {
 
 function createCamera() {
     const camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
-    camera.position.set(0, 100, 100);
+    camera.position.set(20, 10, 20);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
     return camera;
+}
+
+function createCameraControl(camera: Camera) {
+    const controls = new OrbitControls(camera, canvas);
+    return controls;
 }
 
 function createBox() {
@@ -162,14 +170,14 @@ function createLight() {
     return light;
 }
 
-function loadPcd(path:string) {
+function loadPcd(path: string) {
     const loader = new PCDLoader();
     loader.load(
         path,
         function (mesh) {
             mesh.geometry.center();
-            mesh.geometry.rotateX(Math.PI / 2);
-            
+            mesh.geometry.rotateX(-Math.PI / 2);
+
             scene.add(mesh);
             //console.log(mesh.geometry.attributes);
             text.value = "complete";
