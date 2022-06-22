@@ -104,9 +104,6 @@ function init() {
     // 箱を作成
     //const box = createBox();
 
-    // pcd
-    //load_pcd();
-
     // 平行光源
     createLight();
 
