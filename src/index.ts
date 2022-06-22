@@ -94,7 +94,7 @@ function init() {
     const camera = create_camera();
 
     // グリッド追加
-    const gridHelper = new THREE.GridHelper(100, 10);
+    const gridHelper = new THREE.GridHelper(200, 40);
     scene.add(gridHelper);
 
     // 座標軸追加 X軸は赤、Y軸は緑色、Z軸は青。
@@ -135,7 +135,7 @@ function create_renderer() {
 
 function create_camera() {
     const camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
-    camera.position.set(0, 50, 100);
+    camera.position.set(0, 100, 100);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
     return camera;
 }
@@ -167,10 +167,12 @@ function load_pcd(path:string) {
     loader.load(
         path,
         function (mesh) {
-            //mesh.geometry.center();
-            //mesh.geometry.rotateX(Math.PI);
-            //mesh.name = "sample.pcd";
+            mesh.geometry.center();
+            mesh.geometry.rotateX(Math.PI / 2);
+            
             scene.add(mesh);
+            //console.log(mesh.geometry.attributes);
+            text.value = "complete";
         }
     );
 }
