@@ -137,8 +137,18 @@ function createRenderer() {
 }
 
 function createCamera() {
-    const camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
-    camera.position.set(20, 10, 20);
+    const perspectiveCamera = () => {
+        const camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+        camera.position.set(10, 20, 10);
+        return camera;
+    }
+    const orthographicCamera = () => {
+        const camera = new THREE.OrthographicCamera(-width / 20, width / 20, height / 20, -height / 20, -1000, 1000);
+        camera.position.set(0, 1, 0);
+        return camera;
+    }
+
+    const camera = orthographicCamera();
     camera.lookAt(new THREE.Vector3(0, 0, 0));
     return camera;
 }
