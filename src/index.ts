@@ -1,7 +1,6 @@
 import * as THREE from 'three';
-import { Camera, LoaderUtils, Vector3 } from 'three';
-import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
+import { createCamera, createCameraControl } from "./camera";
 console.log("Hello World!");
 
 const inputFiles = document.getElementById("input_files") as HTMLElement;
@@ -64,7 +63,7 @@ function extractData(pcdFile: string) {
     const beginOfData = pcdFile.indexOf(headerOfData) + headerOfData.length;
     const dataVec = pcdFile.slice(beginOfData).split("\n");
 
-    const xyzVec = new Array<XYZ>;
+    const xyzVec = new Array<XYZ>();
     for (var cnt = 0; cnt < points; cnt++) {
         const data = dataVec[cnt].split(" ");
         const xyz: XYZ = { x: parseFloat(data[0]), y: parseFloat(data[1]), z: parseFloat(data[2]) };
@@ -132,28 +131,6 @@ function createRenderer() {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(canvas.width, canvas.height);
     return renderer;
-}
-
-function createCamera() {
-    const perspectiveCamera = () => {
-        const camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 1, 10000);
-        camera.position.set(10, 20, 10);
-        return camera;
-    }
-    const orthographicCamera = () => {
-        const camera = new THREE.OrthographicCamera(-canvas.width / 20, canvas.width / 20, canvas.height / 20, -canvas.height / 20, -1000, 1000);
-        camera.position.set(0, 1, 0);
-        return camera;
-    }
-
-    const camera = orthographicCamera();
-    camera.lookAt(new THREE.Vector3(0, 0, 0));
-    return camera;
-}
-
-function createCameraControl(camera: Camera) {
-    const controls = new OrbitControls(camera, canvas);
-    return controls;
 }
 
 function createBox() {
