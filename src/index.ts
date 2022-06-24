@@ -102,9 +102,6 @@ function init() {
     const axesHelper = new THREE.AxesHelper(100);
     scene.add(axesHelper);
 
-    // 箱を作成
-    //const box = createBox();
-
     // 平行光源
     createLight();
 
@@ -113,9 +110,6 @@ function init() {
 
     function tick() {
         requestAnimationFrame(tick);
-
-        // 箱を回転させる
-        //rotateBox(box);
 
         controls.update();
 
@@ -133,6 +127,7 @@ function createRenderer() {
     return renderer;
 }
 
+// 箱を作成(デバッグ用)
 function createBox() {
     const geometry = new THREE.BoxGeometry(10, 10, 10);
     const material = new THREE.MeshStandardMaterial({ color: 0x00FFFF });
@@ -140,11 +135,6 @@ function createBox() {
     box.position.set(20, 20, 20);
     scene.add(box);
     return box;
-}
-
-function rotateBox(box: THREE.Mesh) {
-    box.rotation.x += 0.01;
-    box.rotation.y += 0.01;
 }
 
 function createLight() {
