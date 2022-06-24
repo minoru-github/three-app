@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
 import { createCamera, createCameraControl } from "./camera";
-import { createLight } from "./light"
+import { createLight } from "./light";
+import { createHelpers } from "./helper";
 console.log("Hello World!");
 
 const inputFiles = document.getElementById("input_files") as HTMLElement;
@@ -95,13 +96,8 @@ function init() {
     // カメラコントロール作成
     const controls = createCameraControl(camera);
 
-    // グリッド追加
-    const gridHelper = new THREE.GridHelper(200, 100);
-    scene.add(gridHelper);
-
-    // 座標軸追加 X軸は赤、Y軸は緑色、Z軸は青。
-    const axesHelper = new THREE.AxesHelper(100);
-    scene.add(axesHelper);
+    // ヘルパー追加
+    createHelpers(scene);
 
     // 平行光源
     createLight(scene);
