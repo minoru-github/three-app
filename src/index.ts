@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
 import { createCamera, createCameraControl } from "./camera";
+import { createLight } from "./light"
 console.log("Hello World!");
 
 const inputFiles = document.getElementById("input_files") as HTMLElement;
@@ -103,7 +104,7 @@ function init() {
     scene.add(axesHelper);
 
     // 平行光源
-    createLight();
+    createLight(scene);
 
     // 初回実行
     tick();
@@ -135,14 +136,6 @@ function createBox() {
     box.position.set(20, 20, 20);
     scene.add(box);
     return box;
-}
-
-function createLight() {
-    const light = new THREE.DirectionalLight(0xFFFFFF);
-    light.intensity = 2; // 光の強さを倍に
-    light.position.set(1, 1, 1);
-    scene.add(light);
-    return light;
 }
 
 function loadPcd(path: string) {
