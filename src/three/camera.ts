@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Camera } from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { GUI } from 'dat.gui'
 
 const canvas = document.getElementById("myCanvas") as HTMLCanvasElement;
 
@@ -25,3 +26,8 @@ export function createCameraControl(camera: Camera) {
     const controls = new OrbitControls(camera, canvas);
     return controls;
 }
+
+const gui = new GUI()
+const cameraFolder = gui.addFolder('Camera')
+//cameraFolder.add(camera.position, 'z', 0, 10)
+cameraFolder.open()
