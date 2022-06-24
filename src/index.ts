@@ -6,7 +6,7 @@ console.log("Hello World!");
 
 const inputFiles = document.getElementById("input_files") as HTMLElement;
 const text = document.getElementById("text") as any;
-const canvas = document.getElementById("myCanvas") as HTMLElement;
+const canvas = document.getElementById("myCanvas") as HTMLCanvasElement;
 
 inputFiles.addEventListener("change", function (event: any) {
     // https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/web-app/repositories/project-web-repository.ts#L24
@@ -82,8 +82,6 @@ function extractData(pcdFile: string) {
 
 window.addEventListener('DOMContentLoaded', init);
 
-const width = 960;
-const height = 540;
 let scene: THREE.Scene;
 function init() {
     // レンダラーを作成
@@ -132,18 +130,18 @@ function createRenderer() {
         canvas: document.querySelector('#myCanvas') as HTMLCanvasElement
     });
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(width, height);
+    renderer.setSize(canvas.width, canvas.height);
     return renderer;
 }
 
 function createCamera() {
     const perspectiveCamera = () => {
-        const camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+        const camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 1, 10000);
         camera.position.set(10, 20, 10);
         return camera;
     }
     const orthographicCamera = () => {
-        const camera = new THREE.OrthographicCamera(-width / 20, width / 20, height / 20, -height / 20, -1000, 1000);
+        const camera = new THREE.OrthographicCamera(-canvas.width / 20, canvas.width / 20, canvas.height / 20, -canvas.height / 20, -1000, 1000);
         camera.position.set(0, 1, 0);
         return camera;
     }
