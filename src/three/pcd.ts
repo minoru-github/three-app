@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Float32BufferAttribute, Scene, Vector3 } from "three";
+import { BufferGeometry, Float32BufferAttribute, Scene, Vector3 } from "three";
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
 
 import { scene } from "./renderer";
@@ -54,33 +54,12 @@ function loadAsString(file: File) {
     // https://runebook.dev/ja/docs/dom/blob/text
     const promise = file.text();
     promise.then((pcdFile: string) => {
-        //console.log(data);
-        //text.value = pcdFile;
-        let { xyzVec, rgbVec } = extractData(pcdFile);
-
-        let geometry = new THREE.BufferGeometry();
+        const geometry = new THREE.BufferGeometry();
         const material = new THREE.PointsMaterial({ size: 0.1, vertexColors: true, color: 0xffffff });
-        
-        if (xyzVec.length > 0 && rgbVec.length > 0) {
-            geometry.setAttribute("position", new Float32BufferAttribute(xyzVec, 3));
-            geometry.setAttribute("color", new Float32BufferAttribute(rgbVec, 3));
-            material.vertexColors = true;
+        let points = new THREE.Points(geometry, material);
 
-            // MEMO:geometryをそのままPointsに入れるとgeometryの中心を座標(0,0,0)に描画しているっぽい
-            //      center計算して座標ずらす。
-            geometry.computeBoundingBox();
-            if (geometry.boundingBox != null) {
-                const offset = new Vector3;
-                geometry.boundingBox.getCenter(offset).negate()
-                console.log(offset);
-                geometry.translate(0,offset.y,offset.z);
-            }
-        } else {
-            alert("data is empty");
-        }
+        addDataToPoints(pcdFile, points);
 
-        const points = new THREE.Points(geometry, material);
-        
         scene.add(points);
     });
 
@@ -88,6 +67,21 @@ function loadAsString(file: File) {
     // https://www.sejuku.net/blog/21049
     function parseHeader(data: string) {
         data.indexOf("WIDTH");
+    }
+
+    function addDataToPoints(pcdFile: string, points: THREE.Points) {
+        const { xyzVec, rgbVec } = extractData(pcdFile);
+
+        if (xyzVec.length > 0 && rgbVec.length > 0) {
+            points.geometry.setAttribute("position", new Float32BufferAttribute(xyzVec, 3));
+            points.geometry.setAttribute("color", new Float32BufferAttribute(rgbVec, 3));
+
+            toCenter(points.geometry);
+        } else {
+            alert("data is empty");
+        }
+
+        return { xyzVec, rgbVec };
     }
 
     // https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/editor-module/utils/pcd-util.ts#L125
@@ -129,5 +123,17 @@ function loadAsString(file: File) {
         }
 
         return { xyzVec, rgbVec };
+    }
+}
+
+// MEMO:geometryをそのままPointsに入れるとgeometryの中心を座標(0,0,0)に描画しているっぽい
+//      center計算して座標ずらす。
+function toCenter(geometry:BufferGeometry) {
+    geometry.computeBoundingBox();
+    if (geometry.boundingBox != null) {
+        const offset = new Vector3;
+        geometry.boundingBox.getCenter(offset).negate()
+        console.log(offset);
+        geometry.translate(0, offset.y, offset.z);
     }
 }
