@@ -8,7 +8,7 @@ import { text } from "../html/element";
 export function onChangePcdFile(event: any) {
     // https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/web-app/repositories/project-web-repository.ts#L24
 
-    var files = event.target.files as FileList;
+    let files = event.target.files as FileList;
     const file = files[0];
     //loadAsDataURL(file);
     loadAsString(file);
@@ -77,7 +77,7 @@ function loadAsString(file: File) {
         //pcdFile.match(/POINTS (.*)/);
         // ()で囲まれたところを抽出してくれる
         const result = pcdFile.match(/POINTS (.*)/);
-        var points = 0;
+        let points = 0;
         if (result != null) {
             points = parseInt(result[1]);
             console.log(points);
@@ -90,7 +90,7 @@ function loadAsString(file: File) {
         const dataVec = pcdFile.slice(beginOfData).split("\n");
 
         const xyzVec = new Array<XYZ>();
-        for (var cnt = 0; cnt < points; cnt++) {
+        for (let cnt = 0; cnt < points; cnt++) {
             const data = dataVec[cnt].split(" ");
             const xyz: XYZ = { x: parseFloat(data[0]), y: parseFloat(data[1]), z: parseFloat(data[2]) };
             xyzVec.push(xyz);
@@ -98,7 +98,7 @@ function loadAsString(file: File) {
 
         //debug(xyzVec);
         function debug(xyzVec: Array<XYZ>) {
-            for (var cnt = 0; cnt < 10; cnt++) {
+            for (let cnt = 0; cnt < 10; cnt++) {
                 console.log("x:%f, y:%f, z:%f", xyzVec[cnt].x, xyzVec[cnt].y, xyzVec[cnt].z);
             }
         }
