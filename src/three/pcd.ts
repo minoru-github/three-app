@@ -1,4 +1,5 @@
-import { Scene } from "three";
+import * as THREE from "three";
+import { Float32BufferAttribute, Scene, Vector3 } from "three";
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
 
 import { scene } from "./renderer";
@@ -54,20 +55,39 @@ function loadAsString(file: File) {
     const promise = file.text();
     promise.then((pcdFile: string) => {
         //console.log(data);
-        text.value = pcdFile;
-        extractData(pcdFile);
+        //text.value = pcdFile;
+        let { xyzVec, rgbVec } = extractData(pcdFile);
+
+        let geometry = new THREE.BufferGeometry();
+        const material = new THREE.PointsMaterial({ size: 0.1, vertexColors: true, color: 0xffffff });
+        
+        if (xyzVec.length > 0 && rgbVec.length > 0) {
+            geometry.setAttribute("position", new Float32BufferAttribute(xyzVec, 3));
+            geometry.setAttribute("color", new Float32BufferAttribute(rgbVec, 3));
+            material.vertexColors = true;
+
+            // MEMO:geometryをそのままPointsに入れるとgeometryの中心を座標(0,0,0)に描画しているっぽい
+            //      center計算して座標ずらす。
+            geometry.computeBoundingBox();
+            if (geometry.boundingBox != null) {
+                const offset = new Vector3;
+                geometry.boundingBox.getCenter(offset).negate()
+                console.log(offset);
+                geometry.translate(0,offset.y,offset.z);
+            }
+        } else {
+            alert("data is empty");
+        }
+
+        const points = new THREE.Points(geometry, material);
+        
+        scene.add(points);
     });
 
     // https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/editor-module/utils/pcd-util.ts#L43
     // https://www.sejuku.net/blog/21049
     function parseHeader(data: string) {
         data.indexOf("WIDTH");
-    }
-
-    type XYZ = {
-        x: number;
-        y: number;
-        z: number;
     }
 
     // https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/editor-module/utils/pcd-util.ts#L125
@@ -89,20 +109,25 @@ function loadAsString(file: File) {
         const beginOfData = pcdFile.indexOf(headerOfData) + headerOfData.length;
         const dataVec = pcdFile.slice(beginOfData).split("\n");
 
-        const xyzVec = new Array<XYZ>();
+        const xyzVec = [];
+        const rgbVec = [];
         for (let cnt = 0; cnt < points; cnt++) {
             const data = dataVec[cnt].split(" ");
-            const xyz: XYZ = { x: parseFloat(data[0]), y: parseFloat(data[1]), z: parseFloat(data[2]) };
-            xyzVec.push(xyz);
+            const x = parseFloat(data[1]);
+            const y = parseFloat(data[2]);
+            const z = parseFloat(data[0]);
+            xyzVec.push(x);
+            xyzVec.push(y);
+            xyzVec.push(z);
+
+            const r = 1.0;
+            const g = 0.5;
+            const b = 0.0;
+            rgbVec.push(r);
+            rgbVec.push(g);
+            rgbVec.push(b);
         }
 
-        //debug(xyzVec);
-        function debug(xyzVec: Array<XYZ>) {
-            for (let cnt = 0; cnt < 10; cnt++) {
-                console.log("x:%f, y:%f, z:%f", xyzVec[cnt].x, xyzVec[cnt].y, xyzVec[cnt].z);
-            }
-        }
-
-        return xyzVec;
+        return { xyzVec, rgbVec };
     }
 }
