@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { Camera } from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import { GUI } from 'dat.gui'
+
+import { getGUI } from './gui/gui';
 
 const canvas = document.getElementById("myCanvas") as HTMLCanvasElement;
 
@@ -13,7 +13,6 @@ orthographicCamera.position.set(1, 2, -1);
 //const camera = perspectiveCamera;
 const camera = orthographicCamera;
 camera.lookAt(new THREE.Vector3(0, 0, 0));
-
 export function getCamera() {
     return camera;
 }
@@ -24,7 +23,7 @@ export function getCameraControl() {
     return controls;
 }
 
-const gui = new GUI()
+const gui = getGUI();
 const cameraFolder = gui.addFolder('Camera')
 //cameraFolder.add(camera.position, 'z', 0, 10)
 cameraFolder.open()
