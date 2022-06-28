@@ -56,3 +56,11 @@ function createBox() {
     scene.add(box);
     return box;
 }
+
+document.addEventListener('mousedown', addAnnotationBox, false);
+function addAnnotationBox(event: MouseEvent) {
+    // X座標
+    let x = event.clientX;
+    let y = event.clientY;
+    console.log("(x,y) = (%d, %d)",x,y);
+}
