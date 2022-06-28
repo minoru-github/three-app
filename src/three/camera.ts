@@ -26,6 +26,7 @@ export function createCamera() {
 
 export function createCameraControl(camera: Camera) {
     const controls = new OrbitControls(camera, canvas);
+    controls.maxPolarAngle = Math.PI / 2;
     return controls;
 }
 
