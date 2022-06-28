@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { createCamera, createCameraControl } from "./camera";
+import { getCamera, getCameraControl } from "./camera";
 import { createLight } from "./light";
 import { createHelpers } from "./helper";
 
@@ -15,9 +15,9 @@ export function initRenderer() {
     scene = new THREE.Scene();
 
     // カメラを作成
-    const camera = createCamera();
+    const camera = getCamera();
     // カメラコントロール作成
-    const controls = createCameraControl(camera);
+    const controls = getCameraControl();
 
     // ヘルパー追加
     createHelpers(scene);
