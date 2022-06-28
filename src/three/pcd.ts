@@ -90,21 +90,37 @@ function loadAsString(file: File) {
         const beginOfPoints = pcdFile.indexOf(headerOfPoints) + headerOfPoints.length;
         //pcdFile.match(/POINTS (.*)/);
         // ()で囲まれたところを抽出してくれる
-        const result = pcdFile.match(/POINTS (.*)/);
+        const matchResultOfPoints = pcdFile.match(/POINTS (.*)/);
         let points = 0;
-        if (result != null) {
-            points = parseInt(result[1]);
+        if (matchResultOfPoints != null) {
+            points = parseInt(matchResultOfPoints[1]);
             console.log(points);
         }
 
         // とりあえずascii固定
-        // TODO:DATAの検索を正規表現に変える
-        const headerOfData = "DATA ascii\n";
-        const beginOfData = pcdFile.indexOf(headerOfData) + headerOfData.length;
-        const dataVec = pcdFile.slice(beginOfData).split("\n");
-
+        const headerOfData = "DATA ascii";
+        let lineFeedCode;
+        if (pcdFile.match(headerOfData + "\r\n")) {
+            lineFeedCode = "\r\n";
+        } else if (pcdFile.match(headerOfData + "\n")) {
+            lineFeedCode = "\n";
+        } else {
+            console.assert("改行コードが異常");
+        }
+        
         const xyzVec = [];
         const rgbVec = [];
+
+        const matchResultOfData = pcdFile.match(/DATA ascii(\n|\r\n)/);
+        let beginOfData;
+        let dataHeaderLength;
+        if (matchResultOfData != null) {
+            const dataHeader = matchResultOfData[0];
+            dataHeaderLength = dataHeader.length;
+            beginOfData = pcdFile.search(/DATA ascii(\n|\r\n)/) + dataHeaderLength;
+        }
+        const dataVec = pcdFile.slice(beginOfData).split(/\n|\r\n/);
+
         for (let cnt = 0; cnt < points; cnt++) {
             const data = dataVec[cnt].split(" ");
             const x = parseFloat(data[1]);
