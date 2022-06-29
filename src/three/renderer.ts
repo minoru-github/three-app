@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { getCamera, getCameraControl } from "./camera";
+import { getCamera, getCameraControl } from "./cameras/main_camera";
 import { createLight } from "./light";
 import { createHelpers } from "./helper";
 import { getGUI } from './gui/gui';
