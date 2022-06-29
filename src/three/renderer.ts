@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { getMainCamera, getMainCameraControl, getMainCameraRenderer } from "./cameras/main_camera";
 import { getTopCamera, getTopCameraRenderer } from './cameras/top_camera';
 import { getFrontCamera, getFrontCameraRenderer } from './cameras/front_camera';
+import { getSideCamera, getSideCameraRenderer } from './cameras/side_camera';
 import { createLight } from "./light";
 import { createHelpers } from "./helper";
 import { getGUI } from './gui/gui';
@@ -16,6 +17,7 @@ export function initRenderer() {
     const mainCameraRenderer = getMainCameraRenderer();
     const topCameraRenderer = getTopCameraRenderer();
     const frontCameraRenderer = getFrontCameraRenderer();
+    const sideCameraRenderer = getSideCameraRenderer();
 
     // シーンを作成
     scene = new THREE.Scene();
@@ -24,6 +26,7 @@ export function initRenderer() {
     const mainCamera = getMainCamera();
     const topCamera = getTopCamera();
     const frontCamera = getFrontCamera();
+    const sideCamera = getSideCamera();
 
     // カメラコントロール作成
     const mainCameraControls = getMainCameraControl();
@@ -46,6 +49,7 @@ export function initRenderer() {
         mainCameraRenderer.render(scene, mainCamera);
         topCameraRenderer.render(scene, topCamera);
         frontCameraRenderer.render(scene, frontCamera);
+        sideCameraRenderer.render(scene, sideCamera);
     }
 }
 
