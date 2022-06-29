@@ -1,25 +1,28 @@
 import * as THREE from 'three';
 
-import { getCamera, getCameraControl } from "./cameras/main_camera";
+import { getMainCamera, getMainCameraControl, getMainCameraRenderer } from "./cameras/main_camera";
+import { getTopCamera, getTopCameraRenderer } from './cameras/top_camera';
 import { createLight } from "./light";
 import { createHelpers } from "./helper";
 import { getGUI } from './gui/gui';
 
 
-import { canvas, text } from '../html/element';
+import { text } from '../html/element';
 
 export let scene: THREE.Scene;
 export function initRenderer() {
     // レンダラーを作成
-    const renderer = getRenderer();
+    const mainCameraRenderer = getMainCameraRenderer();
+    const topCameraRenderer = getTopCameraRenderer();
 
     // シーンを作成
     scene = new THREE.Scene();
 
     // カメラを作成
-    const camera = getCamera();
+    const mainCamera = getMainCamera();
+    const topCamera = getTopCamera();
     // カメラコントロール作成
-    const controls = getCameraControl();
+    const mainCameraControls = getMainCameraControl();
 
     // ヘルパー追加
     createHelpers(scene);
@@ -33,21 +36,14 @@ export function initRenderer() {
     function tick() {
         requestAnimationFrame(tick);
 
-        controls.update();
+        mainCameraControls.update();
 
         // レンダリング
-        renderer.render(scene, camera);
+        mainCameraRenderer.render(scene, mainCamera);
+        topCameraRenderer.render(scene, topCamera);
     }
 }
 
-const renderer = new THREE.WebGLRenderer({
-    canvas: document.querySelector('#myCanvas') as HTMLCanvasElement
-});
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(canvas.width, canvas.height);
-function getRenderer() {
-    return renderer;
-}
 
 // 箱を作成(デバッグ用)
 const offsetY = 1.2;
@@ -72,7 +68,7 @@ function addAnnotationBox(event: MouseEvent) {
     // console.log("offset (x,y) = (%d, %d)", event.offsetX, event.offsetY);
     // console.log("client (x,y) = (%d, %d)", event.clientX, event.clientY);
     // console.log(event);
-    const camera = getCamera();
+    const camera = getMainCamera();
 }
 
 const annotationBoxes = new Array<THREE.Mesh>;
