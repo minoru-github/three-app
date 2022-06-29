@@ -29,15 +29,14 @@ function loadAsDataURL(file: File) {
     function addImage(path: string) {
         const loader = new THREE.TextureLoader();
         const texture = loader.load(path, (tex) => {
-            // 縦横比を保って適当にリサイズ
-            const w = canvas.width;
-            const h = tex.image.height / (tex.image.width / w);
+            const rate = canvas.height / texture.image.height;
+            const width = texture.image.width * rate;
+            const height = canvas.height;
 
-            // 平面
             const geometry = new THREE.PlaneGeometry(1, 1);
             const material = new THREE.MeshPhongMaterial({ map: texture });
             const plane = new THREE.Mesh(geometry, material);
-            plane.scale.set(w, h, 1);
+            plane.scale.set(width, height, 1);
             scene.add(plane);
         })
     }
@@ -55,8 +54,11 @@ renderer.setSize(canvas.width, canvas.height);
 
 var nearPlane = 0.01;
 var farPlane = 1000;
-var camera = new THREE.PerspectiveCamera(60, canvas.width / canvas.height, nearPlane, farPlane);
-camera.position.z = 100;
+const fov = 53.83746828060639;
+const fovRad = (fov / 2) * (Math.PI / 180);
+const dist = canvas.height / 2 / Math.tan(fovRad);
+var camera = new THREE.PerspectiveCamera(fov, canvas.width / canvas.height, nearPlane, farPlane);
+camera.position.z = dist;
 
 // ライト
 var light = new THREE.AmbientLight(0xffffff);
