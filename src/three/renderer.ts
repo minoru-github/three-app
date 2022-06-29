@@ -4,6 +4,7 @@ import { getMainCamera, getMainCameraControl, getMainCameraRenderer } from "./ca
 import { getTopCamera, getTopCameraRenderer } from './cameras/top_camera';
 import { getFrontCamera, getFrontCameraRenderer } from './cameras/front_camera';
 import { getSideCamera, getSideCameraRenderer } from './cameras/side_camera';
+import { tickLeftImage } from './images/left_image';
 import { createLight } from "./light";
 import { createHelpers } from "./helper";
 import { getGUI } from './gui/gui';
@@ -50,6 +51,7 @@ export function initRenderer() {
         topCameraRenderer.render(scene, topCamera);
         frontCameraRenderer.render(scene, frontCamera);
         sideCameraRenderer.render(scene, sideCamera);
+        tickLeftImage();
     }
 }
 
