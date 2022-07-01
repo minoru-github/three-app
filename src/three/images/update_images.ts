@@ -7,8 +7,7 @@ export function onChangeInputImages(event: any) {
     let files = event.target.files as FileList;
     const leftImage = files[0];
     loadAsDataURL(leftImage, leftCanvas, leftScene);
-
-    drawCameraFov(leftCamera);
+    drawCameraFov();
 
     if (files.length == 2) {
         const rightImage = files[1];
@@ -26,6 +25,7 @@ function createCamera(canvas:HTMLCanvasElement) {
     camera.position.z = dist;
     return camera
 }
+
 
 // TODO:右画像と左画像をそれぞれモジュール化
 const leftCanvas = document.getElementById("leftImage") as HTMLCanvasElement;
