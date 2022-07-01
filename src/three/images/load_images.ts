@@ -1,16 +1,11 @@
 import * as THREE from "three";
+import { Scene } from "three";
 
-export function onChangeLeftImages(event: any) {
-    let files = event.target.files as FileList;
-    const file = files[0];
-    loadAsDataURL(file);
-}
-
-function loadAsDataURL(file: File) {
+export function loadAsDataURL(file: File, canvas: HTMLCanvasElement, scene: Scene) {
     const promise = createDataURL(file);
     promise.then((path) => {
         console.log("load complete");
-        addImage(path);
+        addImage(path, canvas, scene);
     });
 
     function createDataURL(file: File) {
@@ -26,7 +21,7 @@ function loadAsDataURL(file: File) {
         return promise;
     }
 
-    function addImage(path: string) {
+    function addImage(path: string, canvas: HTMLCanvasElement, scene: Scene) {
         const loader = new THREE.TextureLoader();
         loader.load(path, (texture) => {
             const rate = canvas.height / texture.image.height;
@@ -40,30 +35,4 @@ function loadAsDataURL(file: File) {
             scene.add(plane);
         })
     }
-}
-
-const scene = new THREE.Scene();
-
-const canvas = document.getElementById("leftImage") as HTMLCanvasElement;
-
-const renderer = new THREE.WebGLRenderer({
-    canvas: document.querySelector('#leftImage') as HTMLCanvasElement
-});
-renderer.setClearColor(0xffffff, 1);
-renderer.setSize(canvas.width, canvas.height);
-
-var nearPlane = 0.01;
-var farPlane = 1000;
-const fov = 53.83746828060639;
-const fovRad = (fov / 2) * (Math.PI / 180);
-const dist = canvas.height / 2 / Math.tan(fovRad);
-var camera = new THREE.PerspectiveCamera(fov, canvas.width / canvas.height, nearPlane, farPlane);
-camera.position.z = dist;
-
-// ライト
-var light = new THREE.AmbientLight(0xffffff);
-scene.add(light);
-
-export function tickLeftImage() {
-    renderer.render(scene, camera);
 }
