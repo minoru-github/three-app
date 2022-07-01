@@ -4,14 +4,18 @@ import { getMainCamera, getMainCameraControl, getMainCameraRenderer } from "./ca
 import { getTopCamera, getTopCameraRenderer } from './cameras/top_camera';
 import { getFrontCamera, getFrontCameraRenderer } from './cameras/front_camera';
 import { getSideCamera, getSideCameraRenderer } from './cameras/side_camera';
+import { tickImages } from './images/update_images';
 import { createLight } from "./light";
 import { createHelpers } from "./helper";
 import { getGUI } from './gui/gui';
-
+import { drawCameraFov } from "./images/draw_camera_fov";
 
 import { text } from '../html/element';
 
-export let scene: THREE.Scene;
+let scene: THREE.Scene;
+export function getSceneInstance() {
+    return scene;
+}
 export function initRenderer() {
     // レンダラーを作成
     const mainCameraRenderer = getMainCameraRenderer();
@@ -50,6 +54,7 @@ export function initRenderer() {
         topCameraRenderer.render(scene, topCamera);
         frontCameraRenderer.render(scene, frontCamera);
         sideCameraRenderer.render(scene, sideCamera);
+        tickImages();
     }
 }
 
