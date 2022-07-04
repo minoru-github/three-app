@@ -3,8 +3,8 @@ import { cameraCalibration } from "./load_calibrations";
 import { getSceneInstance } from "../renderer";
 
 export function drawCameraFov() {
-    addCameraMeshToScene(cameraCalibration.offsetX, cameraCalibration.offsetY, cameraCalibration.offsetZ);
-    drawImageArea(cameraCalibration.offsetX, cameraCalibration.offsetY, cameraCalibration.offsetZ);
+    addCameraMeshToScene(cameraCalibration.posX, cameraCalibration.posY, cameraCalibration.posZ);
+    drawImageArea(cameraCalibration.posX, cameraCalibration.posY, cameraCalibration.posZ);
 }
 
 function addCameraMeshToScene(x: number, y: number, z: number) {
