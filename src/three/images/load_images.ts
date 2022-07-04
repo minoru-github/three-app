@@ -5,6 +5,7 @@ export function loadAsDataURL(file: File, canvas: HTMLCanvasElement, scene: Scen
     const promise = createDataURL(file);
     promise.then((path) => {
         console.log("load complete");
+        // TODO : addImageをdrawモジュールへ移植
         addImage(path, canvas, scene);
     });
 
