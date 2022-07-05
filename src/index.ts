@@ -1,5 +1,5 @@
-import { initRenderer } from "./three/renderer";
-import { onChangePcdFile } from "./three/pcd"
+import { initRenderer } from "./three/three-main";
+import { onChangePcdFile } from "./three/3d-space/pcd"
 import { onChangeInputImages } from "./three/rgb-image/update-rgb-images";
 import { pcdFiles } from "./html/element";
 console.log("Hello World!");

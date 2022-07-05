@@ -2,9 +2,9 @@ import * as THREE from "three";
 import { BufferGeometry, Float32BufferAttribute, Scene, Vector3 } from "three";
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
 
-import { getSceneInstance } from "./renderer";
+import { getSceneInstance } from "../three-main";
 
-import { text } from "../html/element";
+import { text } from "../../html/element";
 
 export function onChangePcdFile(event: any) {
     // https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/web-app/repositories/project-web-repository.ts#L24

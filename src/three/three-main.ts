@@ -5,8 +5,6 @@ import { getTopCamera, getTopCameraRenderer } from './cameras/top-camera';
 import { getFrontCamera, getFrontCameraRenderer } from './cameras/front-camera';
 import { getSideCamera, getSideCameraRenderer } from './cameras/side-camera';
 import { tickCameraImage } from './rgb-image/rgb-image';
-import { createLight } from "./light";
-import { createHelpers } from "./helper";
 import { getGUI } from './gui/gui';
 import { drawCameraFov } from "./cameras/camera-fov";
 
@@ -36,10 +34,10 @@ export function initRenderer() {
     const mainCameraControls = getMainCameraControl();
 
     // ヘルパー追加
-    createHelpers(scene);
+    addHelpers();
 
     // 平行光源
-    createLight(scene);
+    addLight();
 
     // 初回実行
     tick();
@@ -55,6 +53,27 @@ export function initRenderer() {
         frontCameraRenderer.render(scene, frontCamera);
         sideCameraRenderer.render(scene, sideCamera);
         tickCameraImage();
+    }
+
+    function addLight() {
+        const light = new THREE.DirectionalLight(0xFFFFFF);
+        light.intensity = 2; // 光の強さを倍に
+        light.position.set(1, 1, 1);
+        scene.add(light);
+        return light;
+    }
+
+    function addHelpers() {
+        // グリッド追加
+        const gridHelper = new THREE.GridHelper(200, 20);
+        scene.add(gridHelper);
+
+        // 座標軸追加 X軸は赤、Y軸は緑色、Z軸は青。
+        const axesHelper = new THREE.AxesHelper(100);
+        axesHelper.position.setY(2);
+        scene.add(axesHelper);
+
+        return { gridHelper, axesHelper }
     }
 }
 
