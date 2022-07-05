@@ -6,7 +6,7 @@ import { getCameraPosZ, addObjectToImageScene } from "./rgb-image";
 const offsetY = 1.2;
 let boxId = 0;
 export function createAnnotatedBox(xWorld: number, yWorld: number, zWorld: number) {
-    const geometry = new THREE.BoxGeometry(20, 40, 20);
+    const geometry = new THREE.BoxGeometry(10, 10, 10);
     const material = new THREE.MeshBasicMaterial({ color: 0xFF0000, wireframe: true });
     const box = new THREE.Mesh(geometry, material);
     box.name = "annotated box-" + boxId;
@@ -15,7 +15,7 @@ export function createAnnotatedBox(xWorld: number, yWorld: number, zWorld: numbe
     let dist = getCameraPosZ();
     const xImage = dist * calculateTangent(cameraCalib.posX, xWorld);
     const yImage = dist * calculateTangent(cameraCalib.posY, yWorld);
-
+    console.log("world (x, y, z) : (%f, %f, %f), image (x,y) : (%f, %f)", xWorld, yWorld, zWorld, xImage, yImage);
     box.position.set(xImage, yImage, 0);
 
     function calculateTangent(posCamera: number, posWorld: number) {
