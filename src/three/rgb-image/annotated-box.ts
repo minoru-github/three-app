@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { cameraCalib } from "./load-calibrations";
-import { getCameraPosZ } from "./rgb-image";
+import { getCameraPosZ, addObjectToImageScene } from "./rgb-image";
 
 // 箱を作成(デバッグ用)
 const offsetY = 1.2;
@@ -23,4 +23,9 @@ export function createAnnotatedBox(xWorld: number, yWorld: number, zWorld: numbe
     }
 
     return box;
+}
+
+export function addAnnotationBoxToImageScene(xWorld: number, yWorld: number, zWorld: number) {
+    const box = createAnnotatedBox(xWorld, yWorld, zWorld);
+    addObjectToImageScene(box);
 }

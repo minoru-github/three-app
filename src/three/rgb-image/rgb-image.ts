@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { cameraCalib } from "./load-calibrations";
-import { createAnnotatedBox } from "./annotated-box";
 
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#rightImage') as HTMLCanvasElement
@@ -18,8 +17,8 @@ export function getImageCanvasInstance() {
     return canvas;
 }
 
-export function getImageSceneInstance() {
-    return scene;
+export function addObjectToImageScene(object : any) {
+    scene.add(object);
 }
 
 export function tickCameraImage() {
