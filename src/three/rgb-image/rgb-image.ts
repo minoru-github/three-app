@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { cameraCalibration } from "./load-calibrations";
 
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#rightImage') as HTMLCanvasElement
@@ -27,7 +28,7 @@ export function tickCameraImage() {
 function createCamera(canvas: HTMLCanvasElement) {
     var nearPlane = 0.01;
     var farPlane = 1000;
-    const fov = 53.83746828060639;
+    const fov = cameraCalibration.fovHorizontal;
     const fovRad = (fov / 2) * (Math.PI / 180);
     const dist = canvas.height / 2 / Math.tan(fovRad);
     const camera = new THREE.PerspectiveCamera(fov, canvas.width / canvas.height, nearPlane, farPlane);
