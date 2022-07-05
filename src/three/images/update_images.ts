@@ -1,28 +1,47 @@
 import * as THREE from "three";
+import { Scene } from "three";
 
-import { loadAsDataURL } from "./load_images";
 import { drawCameraFov } from "./draw_camera_fov";
-import { getLeftCanvasInstance, getLeftSceneInstance, tickLeftImages } from "./left_image";
-import { getRightCanvasInstance, getRightSceneInstance, tickRightImages } from "./right_image";
+import { getImageCanvasInstance, getImageSceneInstance } from "./camera_image";
 
 export function onChangeInputImages(event: any) {
     let files = event.target.files as FileList;
     // TODO : 入力順で左右を決定しているのを汎用的な仕組みに変える
-    const leftImage = files[0];
-    const leftCanvas = getLeftCanvasInstance();
-    const leftScene = getLeftSceneInstance();
-    loadAsDataURL(leftImage, leftCanvas, leftScene);
+    const image = files[0];
+    const canvas = getImageCanvasInstance();
+    const scene = getImageSceneInstance();
+    const promise = createDataURL(image);
+    promise.then((path:string) => {
+            addImage(path, canvas, scene);
+        }
+    )
     drawCameraFov();
 
-    if (files.length == 2) {
-        const rightImage = files[1];
-        const rightCanvas = getRightCanvasInstance();
-        const rightScene = getRightSceneInstance();
-        loadAsDataURL(rightImage, rightCanvas, rightScene);
+    function createDataURL(file: File) {
+        const promise = new Promise<string>((resolve, reject) => {
+            //FileReaderオブジェクトの作成
+            const reader = new FileReader();
+            // onload = 読み込み完了したときに実行されるイベント
+            reader.onload = (event) => {
+                resolve(event.target?.result as string);
+            };
+            reader.readAsDataURL(file);
+        });
+        return promise;
     }
-}
 
-export function tickImages() {
-    tickLeftImages();
-    tickRightImages();
+    function addImage(path: string, canvas: HTMLCanvasElement, scene: Scene) {
+        const loader = new THREE.TextureLoader();
+        loader.load(path, (texture) => {
+            const rate = canvas.height / texture.image.height;
+            const width = texture.image.width * rate;
+            const height = canvas.height;
+
+            const geometry = new THREE.PlaneGeometry(1, 1);
+            const material = new THREE.MeshPhongMaterial({ map: texture });
+            const plane = new THREE.Mesh(geometry, material);
+            plane.scale.set(width, height, 1);
+            scene.add(plane);
+        })
+    }
 }
