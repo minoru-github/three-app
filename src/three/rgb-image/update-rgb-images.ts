@@ -1,12 +1,17 @@
 import * as THREE from "three";
-import { Scene } from "three";
 
-export function loadAsDataURL(file: File, canvas: HTMLCanvasElement, scene: Scene) {
-    const promise = createDataURL(file);
-    promise.then((path) => {
-        console.log("load complete");
-        addImage(path, canvas, scene);
-    });
+import { drawCameraFov } from "../xyz-space/cameras/camera-fov";
+import { getImageCanvasInstance, addObjectToImageScene } from "./rgb-image";
+
+export function onChangeInputImages(event: any) {
+    let files = event.target.files as FileList;
+    // TODO : 入力順で左右を決定しているのを汎用的な仕組みに変える
+    const image = files[0];
+    const promise = createDataURL(image);
+    promise.then((path:string) => {
+        addImage(path);
+    })
+    drawCameraFov();
 
     function createDataURL(file: File) {
         const promise = new Promise<string>((resolve, reject) => {
@@ -21,18 +26,19 @@ export function loadAsDataURL(file: File, canvas: HTMLCanvasElement, scene: Scen
         return promise;
     }
 
-    function addImage(path: string, canvas: HTMLCanvasElement, scene: Scene) {
+    function addImage(path: string) {
         const loader = new THREE.TextureLoader();
         loader.load(path, (texture) => {
+            const canvas = getImageCanvasInstance();
             const rate = canvas.height / texture.image.height;
             const width = texture.image.width * rate;
             const height = canvas.height;
 
             const geometry = new THREE.PlaneGeometry(1, 1);
-            const material = new THREE.MeshPhongMaterial({ map: texture });
+            const material = new THREE.MeshPhongMaterial({ map: texture, transparent:true, opacity:0.6 });
             const plane = new THREE.Mesh(geometry, material);
             plane.scale.set(width, height, 1);
-            scene.add(plane);
+            addObjectToImageScene(plane);
         })
     }
 }
