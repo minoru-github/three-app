@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
-import { getGUI } from '../gui/gui';
+import { getGUI } from '../../gui/gui';
 
 const canvas = document.getElementById("mainCameraCanvas") as HTMLCanvasElement;
 

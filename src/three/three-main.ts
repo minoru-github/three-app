@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 
-import { getMainCamera, getMainCameraControl, getMainCameraRenderer } from "./cameras/main-camera";
-import { getTopCamera, getTopCameraRenderer } from './cameras/top-camera';
-import { getFrontCamera, getFrontCameraRenderer } from './cameras/front-camera';
-import { getSideCamera, getSideCameraRenderer } from './cameras/side-camera';
+import { getMainCamera, getMainCameraControl, getMainCameraRenderer } from "./3d-space/cameras/main-camera";
+import { getTopCamera, getTopCameraRenderer } from './3d-space/cameras/top-camera';
+import { getFrontCamera, getFrontCameraRenderer } from './3d-space/cameras/front-camera';
+import { getSideCamera, getSideCameraRenderer } from './3d-space/cameras/side-camera';
 import { tickCameraImage } from './rgb-image/rgb-image';
 import { getGUI } from './gui/gui';
-import { drawCameraFov } from "./cameras/camera-fov";
+import { drawCameraFov } from "./3d-space/cameras/camera-fov";
 
 import { text } from '../html/element';
 
