@@ -16,7 +16,7 @@ export function createAnnotatedBox(xWorld: number, yWorld: number, zWorld: numbe
     const xImage = dist * calculateTangent(cameraCalib.posX, xWorld);
     const yImage = dist * calculateTangent(cameraCalib.posY, yWorld);
 
-    box.position.set(xImage, yImage, -dist);
+    box.position.set(xImage, yImage, 0);
 
     function calculateTangent(posCamera: number, posWorld: number) {
         return (posWorld - posCamera) / (zWorld - cameraCalib.posZ);
