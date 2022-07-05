@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { cameraCalibration } from "./load_calibrations";
+import { cameraCalibration } from "./load-calibrations";
 import { getSceneInstance } from "../renderer";
 
 export function drawCameraFov() {
