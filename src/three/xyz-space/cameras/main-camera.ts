@@ -15,8 +15,8 @@ perspectiveCamera.position.set(10, 20, -10);
 const orthographicCamera = new THREE.OrthographicCamera(-canvas.width / 20, canvas.width / 20, canvas.height / 20, -canvas.height / 20, -1000, 1000);
 orthographicCamera.position.set(1, 2, -1);
 
-//const camera = perspectiveCamera;
-const camera = orthographicCamera;
+const camera = perspectiveCamera;
+//const camera = orthographicCamera;
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 const controls = new OrbitControls(camera, canvas);
