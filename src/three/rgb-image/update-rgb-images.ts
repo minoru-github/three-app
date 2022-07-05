@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { Scene } from "three";
 
-import { drawCameraFov } from "../3d-space/cameras/camera-fov";
+import { drawCameraFov } from "../xyz-space/cameras/camera-fov";
 import { getImageCanvasInstance, getImageSceneInstance } from "./rgb-image";
 import { createAnnotatedBox } from "./annotated-box";
 

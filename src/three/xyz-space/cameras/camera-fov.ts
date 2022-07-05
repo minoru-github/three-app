@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { cameraCalib } from "../../rgb-image/load-calibrations";
-import { getSceneInstance } from "../../three-main";
+import { get3dSpaceSceneInstance } from "../xyz-space";
 
 export function drawCameraFov() {
     addCameraMeshToScene(cameraCalib.posX, cameraCalib.posY, cameraCalib.posZ);
@@ -13,7 +13,7 @@ function addCameraMeshToScene(x: number, y: number, z: number) {
     const box = new THREE.Mesh(geometry, material);
     box.name = "camera";
     box.position.set(x, y, z);
-    getSceneInstance().add(box);
+    get3dSpaceSceneInstance().add(box);
 }
 
 function drawImageArea(x: number, y: number, z: number) {
@@ -27,5 +27,5 @@ function drawImageArea(x: number, y: number, z: number) {
     const box = new THREE.Mesh(geometry, material);
     box.name = "imageArea";
     box.position.set(x, y, z + distance);
-    getSceneInstance().add(box);
+    get3dSpaceSceneInstance().add(box);
 }

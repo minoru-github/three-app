@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { BufferGeometry, Float32BufferAttribute, Scene, Vector3 } from "three";
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
 
-import { getSceneInstance } from "../three-main";
+import { get3dSpaceSceneInstance } from "./xyz-space";
 
 import { text } from "../../html/element";
 
@@ -18,7 +18,7 @@ export function onChangePcdFile(event: any) {
 function loadAsDataURL(file: File) {
     const promise = createDataURL(file);
     promise.then((path) => {
-        loadPcd(path, getSceneInstance());
+        loadPcd(path, get3dSpaceSceneInstance());
     });
 
     function createDataURL(file: File) {
@@ -60,7 +60,7 @@ function loadAsString(file: File) {
 
         addDataToPoints(pcdFile, points);
 
-        getSceneInstance().add(points);
+        get3dSpaceSceneInstance().add(points);
     });
 
     // https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/editor-module/utils/pcd-util.ts#L43
