@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { cameraCalib } from "./rgb-image/load-calibrations";
-import { getSceneInstance } from "./renderer";
+import { cameraCalib } from "../rgb-image/load-calibrations";
+import { getSceneInstance } from "../renderer";
 
 export function drawCameraFov() {
     addCameraMeshToScene(cameraCalib.posX, cameraCalib.posY, cameraCalib.posZ);

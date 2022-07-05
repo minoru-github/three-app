@@ -8,7 +8,7 @@ import { tickCameraImage } from './rgb-image/rgb-image';
 import { createLight } from "./light";
 import { createHelpers } from "./helper";
 import { getGUI } from './gui/gui';
-import { drawCameraFov } from "./camera-fov";
+import { drawCameraFov } from "./cameras/camera-fov";
 
 import { text } from '../html/element';
 
