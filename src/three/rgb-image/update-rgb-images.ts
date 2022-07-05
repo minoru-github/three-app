@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import { Scene } from "three";
 
-import { drawCameraFov } from "./draw-camera_fov";
-import { getImageCanvasInstance, getImageSceneInstance } from "./camera-image";
+import { drawCameraFov } from "../camera-fov";
+import { getImageCanvasInstance, getImageSceneInstance } from "./rgb-image";
 
 export function onChangeInputImages(event: any) {
     let files = event.target.files as FileList;

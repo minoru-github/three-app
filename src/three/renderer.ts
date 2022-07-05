@@ -4,11 +4,11 @@ import { getMainCamera, getMainCameraControl, getMainCameraRenderer } from "./ca
 import { getTopCamera, getTopCameraRenderer } from './cameras/top-camera';
 import { getFrontCamera, getFrontCameraRenderer } from './cameras/front-camera';
 import { getSideCamera, getSideCameraRenderer } from './cameras/side-camera';
-import { tickCameraImage } from './images/camera-image';
+import { tickCameraImage } from './rgb-image/rgb-image';
 import { createLight } from "./light";
 import { createHelpers } from "./helper";
 import { getGUI } from './gui/gui';
-import { drawCameraFov } from "./images/draw-camera_fov";
+import { drawCameraFov } from "./camera-fov";
 
 import { text } from '../html/element';
 
