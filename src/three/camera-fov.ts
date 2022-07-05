@@ -1,10 +1,10 @@
 import * as THREE from "three";
-import { cameraCalibration } from "./rgb-image/load-calibrations";
+import { cameraCalib } from "./rgb-image/load-calibrations";
 import { getSceneInstance } from "./renderer";
 
 export function drawCameraFov() {
-    addCameraMeshToScene(cameraCalibration.posX, cameraCalibration.posY, cameraCalibration.posZ);
-    drawImageArea(cameraCalibration.posX, cameraCalibration.posY, cameraCalibration.posZ);
+    addCameraMeshToScene(cameraCalib.posX, cameraCalib.posY, cameraCalib.posZ);
+    drawImageArea(cameraCalib.posX, cameraCalib.posY, cameraCalib.posZ);
 }
 
 function addCameraMeshToScene(x: number, y: number, z: number) {
@@ -17,10 +17,10 @@ function addCameraMeshToScene(x: number, y: number, z: number) {
 }
 
 function drawImageArea(x: number, y: number, z: number) {
-    const fovRad = cameraCalibration.halfFovHorizontal * (Math.PI / 180);
+    const fovRad = cameraCalib.halfFovHorizontal * (Math.PI / 180);
     const distance = 10;
     const height = 2 * distance * Math.tan(fovRad);
-    const width = height * cameraCalibration.aspect;
+    const width = height * cameraCalib.aspect;
     const geometry = new THREE.PlaneGeometry(width, height);
 
     const material = new THREE.MeshBasicMaterial({ color: 0xFF00FF , wireframe:true});

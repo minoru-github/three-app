@@ -1,5 +1,5 @@
 // TODO:yaml読み込みに変更する
-export const cameraCalibration = {
+export const cameraCalib = {
     width: 1242,
     height: 375,
     aspect: 1242 / 375,
