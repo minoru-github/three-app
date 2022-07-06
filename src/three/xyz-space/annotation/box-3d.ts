@@ -6,15 +6,14 @@ import { addAnnotationBoxToImageScene } from "../../rgb-image/annotated-box";
 import { text } from "../../../html/element";
 
 // 箱を作成(デバッグ用)
-const offsetY = 1.2;
 let boxId = 0;
 function createBox3d(x: number, y: number, z: number) {
     const geometry = new THREE.BoxGeometry(1, 2, 1);
     const material = new THREE.MeshBasicMaterial({ color: 0x00FFFF, wireframe: true });
     const box = new THREE.Mesh(geometry, material);
-    box.name = "box-" + boxId;
+    box.name = "xyz space box-" + boxId;
     boxId++;
-    box.position.set(x, y + offsetY, z);
+    box.position.set(x, y, z);
     get3dSpaceSceneInstance().add(box);
     return box;
 }
@@ -41,14 +40,14 @@ function setBox() {
     let str = "";
     for (let index = 0; index < annotationBoxes.length; index++) {
         const annotationBox = annotationBoxes[index];
-        str += annotationBox.name + " : (" + annotationBox.position.x + ", " + (annotationBox.position.y - offsetY) + ", " + annotationBox.position.z + ")\n";
+        str += annotationBox.name + " : (" + annotationBox.position.x + ", " + annotationBox.position.y + ", " + annotationBox.position.z + ")\n";
         text.value = str;
     }
 }
 
 export const box3d = {
     x: -7,
-    y: 0,
+    y: 1.2,
     z: 10.5,
     set: function () { setBox() }
 }

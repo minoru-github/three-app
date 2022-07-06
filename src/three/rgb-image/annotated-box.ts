@@ -3,13 +3,12 @@ import { cameraCalib } from "./load-calibrations";
 import { getCameraPosZ, addObjectToImageScene } from "./rgb-image";
 
 // 箱を作成(デバッグ用)
-const offsetY = 1.2;
 let boxId = 0;
 export function createAnnotatedBox(xWorld: number, yWorld: number, zWorld: number) {
-    const geometry = new THREE.BoxGeometry(10, 10, 10);
+    const geometry = new THREE.BoxGeometry(10, 20, 10);
     const material = new THREE.MeshBasicMaterial({ color: 0xFF0000, wireframe: true });
     const box = new THREE.Mesh(geometry, material);
-    box.name = "annotated box-" + boxId;
+    box.name = "rgb image box-" + boxId;
     boxId++;
 
     let dist = getCameraPosZ();
