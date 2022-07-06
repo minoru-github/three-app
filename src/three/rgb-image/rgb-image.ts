@@ -25,6 +25,7 @@ export function tickCameraImage() {
     renderer.render(scene, camera);
 }
 
+// TODO 画像読み込んでからcreateCameraする。理由：canvasサイズを画像サイズに変更してからcamera作らないとデフォルトのcanvasサイズで作られる。
 function createCamera(canvas: HTMLCanvasElement) {
     var nearPlane = 0.01;
     var farPlane = 1000;

@@ -2,9 +2,9 @@ import * as THREE from "three";
 import { BufferGeometry, Float32BufferAttribute, Scene, Vector3 } from "three";
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
 
-import { get3dSpaceSceneInstance } from "./xyz-space";
+import { get3dSpaceSceneInstance } from "../xyz-space";
 
-import { text } from "../../html/element";
+import { text } from "../../../html/element";
 
 function loadPcdAsDataURL(file: File) {
     const promise = createDataURL(file);
