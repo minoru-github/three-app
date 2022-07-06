@@ -1,3 +1,6 @@
+import { loadPcdAsString } from "../xyz-space/pcd";
+import { drawRgbImages } from "../rgb-image/update-rgb-images";
+
 export function onChangeInputFiles(event: any) {
     let files = event.target.files as FileList;
 
@@ -6,9 +9,13 @@ export function onChangeInputFiles(event: any) {
     for (let index = 0; index < files.length; index++) {
         const file = files[index];
         if (file.name.match(/\.pcd/)) {
-            pcdFiles.push(file);            
+            pcdFiles.push(file);
+            loadPcdAsString(file);
         } else if (file.name.match(/\.(png|bmp|jpg)/)) {
             imageFiles.push(file);
+            drawRgbImages(file);
+            // TODO 左右画像描画対応
+            break;
         }
     }
 }

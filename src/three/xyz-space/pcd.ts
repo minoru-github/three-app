@@ -6,16 +6,7 @@ import { get3dSpaceSceneInstance } from "./xyz-space";
 
 import { text } from "../../html/element";
 
-export function onChangePcdFile(event: any) {
-    // https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/web-app/repositories/project-web-repository.ts#L24
-
-    let files = event.target.files as FileList;
-    const file = files[0];
-    //loadAsDataURL(file);
-    loadAsString(file);
-}
-
-function loadAsDataURL(file: File) {
+function loadPcdAsDataURL(file: File) {
     const promise = createDataURL(file);
     promise.then((path) => {
         loadPcd(path, get3dSpaceSceneInstance());
@@ -50,7 +41,7 @@ function loadAsDataURL(file: File) {
     }
 }
 
-function loadAsString(file: File) {
+export function loadPcdAsString(file: File) {
     // https://runebook.dev/ja/docs/dom/blob/text
     const promise = file.text();
     promise.then((pcdFile: string) => {

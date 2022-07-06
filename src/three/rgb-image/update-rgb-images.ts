@@ -3,12 +3,10 @@ import * as THREE from "three";
 import { drawCameraFov } from "../xyz-space/cameras/camera-fov";
 import { getImageCanvasInstance, addObjectToImageScene } from "./rgb-image";
 
-export function onChangeInputImages(event: any) {
-    let files = event.target.files as FileList;
+export function drawRgbImages(file: File) {
     // TODO : 入力順で左右を決定しているのを汎用的な仕組みに変える
-    const image = files[0];
-    const promise = createDataURL(image);
-    promise.then((path:string) => {
+    const promise = createDataURL(file);
+    promise.then((path: string) => {
         addImage(path);
     })
     drawCameraFov();
@@ -35,7 +33,7 @@ export function onChangeInputImages(event: any) {
             const height = canvas.height;
 
             const geometry = new THREE.PlaneGeometry(1, 1);
-            const material = new THREE.MeshPhongMaterial({ map: texture, transparent:true, opacity:0.6 });
+            const material = new THREE.MeshPhongMaterial({ map: texture, transparent: true, opacity: 0.6 });
             const plane = new THREE.Mesh(geometry, material);
             plane.scale.set(width, height, 1);
             addObjectToImageScene(plane);
