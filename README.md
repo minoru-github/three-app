@@ -1,14 +1,17 @@
 # three-app
-three.jsを練習  
+
+:warning:*****under development*****:warning:  
 
 [![pages-build-deployment](https://github.com/minoru-github/three-app/actions/workflows/pages/pages-build-deployment/badge.svg?branch=gh-pages)](https://github.com/minoru-github/three-app/actions/workflows/pages/pages-build-deployment)  
 https://minoru-github.github.io/three-app/
 
-+ 参考
-  + https://ics.media/entry/14771/
-  + https://threejs.org/
++ Purpose
+  + annotate point cloud data with 3d box
++ Installation
+  + library install from package.json `npm install`
+  + bundle `npm run webpack`
+  + deploy `npm run deploy`
+  + launch a local server `npm run start`
 
-+ 使い方
-  + バンドル `npx webpack`
-  + デプロイ `npm run deploy`
-  + ローカルサーバー立ち上げ `npm run start`
++ Reference
+  + https://automan.ai/
