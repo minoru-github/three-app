@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { cameraCalib } from "./load-calibrations";
-import { getCameraPosZ, addObjectToImageScene } from "./rgb-image";
+import { getDistanceCameraToRgbImage, addObjectToImageScene } from "./rgb-image";
 
 // 箱を作成(デバッグ用)
 let boxId = 0;
@@ -11,7 +11,7 @@ export function createAnnotatedBox(xWorld: number, yWorld: number, zWorld: numbe
     box.name = "rgb image box-" + boxId;
     boxId++;
 
-    let dist = getCameraPosZ();
+    let dist = getDistanceCameraToRgbImage();
     const xImage = dist * calculateTangent(cameraCalib.posX, xWorld);
     const yImage = dist * calculateTangent(cameraCalib.posY, yWorld);
     console.log("world (x, y, z) : (%f, %f, %f), image (x,y) : (%f, %f)", xWorld, yWorld, zWorld, xImage, yImage);

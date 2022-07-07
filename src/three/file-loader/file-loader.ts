@@ -1,5 +1,5 @@
 import { loadPcdAsString } from "../xyz-space/pcd/pcd";
-import { drawRgbImages } from "../rgb-image/draw-rgb-images";
+import { drawRgbImages } from "../rgb-image/rgb-image";
 
 export function onChangeInputFiles(event: any) {
     let files = event.target.files as FileList;
