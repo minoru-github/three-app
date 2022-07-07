@@ -8,10 +8,14 @@ https://minoru-github.github.io/three-app/
 + Purpose
   + annotate point cloud data with 3d box
 + Installation
-  + library install from package.json `npm install`
-  + bundle `npm run webpack`
-  + deploy `npm run deploy`
-  + launch a local server `npm run start`
+  + library install from package.json  
+    `npm install`
+  + bundle  
+    `npm run build`
+  + deploy  
+    `npm run deploy`
+  + launch a local server  
+    `npm run start`
 
 + Reference
   + https://automan.ai/
