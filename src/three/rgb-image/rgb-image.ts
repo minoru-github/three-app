@@ -3,7 +3,7 @@ import { cameraCalib } from "./load-calibrations";
 import { drawCameraFov } from "../xyz-space/cameras/camera-fov";
 
 const renderer = new THREE.WebGLRenderer({
-    canvas: document.querySelector('#rightImage') as HTMLCanvasElement
+    canvas: document.querySelector('#canvasImage') as HTMLCanvasElement
 });
 function setRendererParameter(imageWidth: number, imageHeight: number) {
     renderer.setClearColor(0xffffff, 1);
@@ -45,7 +45,8 @@ export function drawRgbImages(file: File) {
     const promise = createDataURL(file);
     promise.then((path: string) => {
         initImageScene();
-        addImage(path);
+        //addImage(path);
+        setImageToCanvas(path);
     })
 
     drawCameraFov();
@@ -80,11 +81,23 @@ export function drawRgbImages(file: File) {
             addObjectToImageScene(imagePlane);
 
             function setCanvasSieze(imageWidth: number, imageHeight: number) {
-                const canvas = document.getElementById("rightImage") as HTMLCanvasElement;
+                const canvas = document.getElementById("canvasImage") as HTMLCanvasElement;
                 canvas.width = imageWidth;
                 canvas.height = imageHeight;
             }
         })
+    }
+
+    function setImageToCanvas(path :string) {
+        const image = new Image();
+        image.src = path;
+        image.onload = function () {
+            const canvas = document.getElementById("canvasImage") as HTMLCanvasElement;
+            const context = canvas.getContext("2d");
+            canvas.width = image.width;
+            canvas.height = image.height;
+            context?.drawImage(image, 0, 0);
+        }
     }
 
 }
