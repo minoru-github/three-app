@@ -20,12 +20,16 @@ function drawImageArea(x: number, y: number, z: number) {
     const distance = 10;
     const height = 2 * (cameraCalib.height * distance) / cameraCalib.fy_pix;
     const width = 2 * (cameraCalib.width * distance) / cameraCalib.fx_pix;
-    console.log("imageArea w:{}, h:{}", width, height);
+    console.log("imageArea w:{%f}, h:{%f}", width, height);
 
-    const left = cameraCalib.posX + width / 2;
-    const right = cameraCalib.posX - width / 2;
-    const down = cameraCalib.posY - height / 2;
-    const up = cameraCalib.posY + height / 2;
+    const offsetX = cameraCalib.widthFull / 2 - cameraCalib.cx;
+    const offsetY = cameraCalib.heightFull / 2 - cameraCalib.cy;
+    console.log("offset X:{%f}, Y:{%f}", offsetX, offsetY);
+
+    const left = cameraCalib.posX + ((cameraCalib.width - offsetX) * distance) / cameraCalib.fx_pix;
+    const right = cameraCalib.posX - ((cameraCalib.width + offsetX) * distance) / cameraCalib.fx_pix;;
+    const down = cameraCalib.posY - ((cameraCalib.height - offsetY) * distance) / cameraCalib.fy_pix;
+    const up = cameraCalib.posY + ((cameraCalib.height + offsetY) * distance) / cameraCalib.fy_pix;
     const leftdown = new THREE.Vector3(left, down, z + distance);
     const leftUp = new THREE.Vector3(left, up, z + distance);
     const rightdown = new THREE.Vector3(right, down, z + distance);
