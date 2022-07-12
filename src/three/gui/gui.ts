@@ -6,8 +6,8 @@ const gui = new GUI();
 
 export function initGUI() {
     gui.addFolder("Box")
-    gui.add(box3d, "x");
-    gui.add(box3d, "y");
-    gui.add(box3d, "z");
+    gui.add(box3d, "x_m");
+    gui.add(box3d, "y_m");
+    gui.add(box3d, "z_m");
     gui.add(box3d, "set")
 }
