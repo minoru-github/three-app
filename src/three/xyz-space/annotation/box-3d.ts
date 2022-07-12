@@ -9,19 +9,10 @@ import { text } from "../../../html/element";
 let boxId = 0;
 const annotationBoxes = new Array<THREE.Mesh>;
 function addAnnotationBoxTo3dSpace(x_m: number, y_m: number, z_m: number) {
-    // const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-    // const material = new THREE.MeshBasicMaterial({ color: 0x00FFFF, wireframe: true });
-    // const box = new THREE.Mesh(geometry, material);
-    // console.log(box);
-    // box.name = "xyz space box-" + boxId;
-    // boxId++;
-    // box.position.set(x_m, y_m, z_m);
-    // get3dSpaceSceneInstance().add(box);
-    // annotationBoxes.push(box)
-
+    // TODO: 頂点を3D用と画像用で別々で作ってるので一元管理する
     const sizeX = 0.6;
     const sizeY = 1.6;
-    const sizeZ = 1.0;
+    const sizeZ = 1.4;
 
     const center = new THREE.Vector3(x_m, y_m, z_m);
     const points = [];
@@ -89,7 +80,7 @@ function setBox() {
 
 export const box3d = {
     x_m: -1.62,
-    y_m: 0.9,
+    y_m: 1.0,
     z_m: 6,
     set: function () { setBox() }
 }
