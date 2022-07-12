@@ -8,7 +8,7 @@ import { text } from "../../../html/element";
 // 箱を作成(デバッグ用)
 let boxId = 0;
 function createBox3d(x: number, y: number, z: number) {
-    const geometry = new THREE.BoxGeometry(1, 2, 1);
+    const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
     const material = new THREE.MeshBasicMaterial({ color: 0x00FFFF, wireframe: true });
     const box = new THREE.Mesh(geometry, material);
     box.name = "xyz space box-" + boxId;
@@ -46,8 +46,8 @@ function setBox() {
 }
 
 export const box3d = {
-    x: -7,
-    y: 1.2,
-    z: 10.5,
+    x: -1.6,
+    y: 1.8,
+    z: 6,
     set: function () { setBox() }
 }

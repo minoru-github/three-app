@@ -1,15 +1,24 @@
 // TODO:yaml読み込みに変更する
 export const cameraCalib = {
-    width: 1242,
-    height: 375,
-    aspect: 1242 / 375,
-    posX: 0.0,
-    posY: 1.0,
-    posZ: 2.32,
-    fx_mm: 1.0742378829835634e+03,
-    fy_mm: 1.0810512359868962e+03,
-    fx_m: 1.0742378829835634,
-    fy_m: 1.0810512359868962,
-    fovHorizontal: 53.83746828060639,
-    halfFovHorizontal: 53.83746828060639/2.0,
+    width_pix: 1242,
+    height_pix: 375,
+    fx_pix: 9.842439e+02, // 焦点距離を画素ピッチで割ってpix単位に変換したもの
+    fy_pix: 9.808141e+02,
+    cx_pix: 6.900000e+02,
+    cy_pix: 2.331966e+02,
+    fovHorizontal_deg: 90,
+    fovVertical_deg: 90 * (375 / 1242),
+    posX_m: 0.06,
+    posY_m: 1.65,
+    posZ_m: 0.27,
 }
+
+export const distanceSensorCalib = {
+    posY_m: 1.73
+}
+
+export const projectionMatrix = [
+    [7.215377e+02, 0.000000e+00, 6.095593e+02, 4.485728e+01],
+    [0.000000e+00, 7.215377e+02, 1.728540e+02, 2.163791e-01],
+    [0.000000e+00, 0.000000e+00, 1.000000e+00, 2.745884e-03],
+]

@@ -1,6 +1,7 @@
 import * as THREE from "three";
-import { cameraCalib } from "./load-calibrations";
+import { cameraCalib, projectionMatrix } from "./load-calibrations";
 import { drawCameraFov } from "../xyz-space/cameras/camera-fov";
+import { text } from "../../html/element";
 
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#rightImage') as HTMLCanvasElement
@@ -29,11 +30,11 @@ let camera = new THREE.PerspectiveCamera(0, 1, 0, 0);
 function createCamera(imageWidth: number, imageHeight: number) {
     var nearPlane = 0.01;
     var farPlane = 1000;
-    const fov = cameraCalib.fovHorizontal;
-    const fovRad = (fov / 2) * (Math.PI / 180);
-    const dist = imageHeight / 2 / Math.tan(fovRad);
+    const fov = cameraCalib.fovHorizontal_deg;
+    const fovRad = fov * (Math.PI / 180);
     camera = new THREE.PerspectiveCamera(fov, imageWidth / imageHeight, nearPlane, farPlane);
-    camera.position.z = dist;
+    const distance_m = imageHeight / 2 / Math.tan(fovRad/2);
+    camera.position.z = distance_m;
 }
 
 export function getDistanceCameraToRgbImage() {
@@ -88,15 +89,43 @@ export function drawRgbImages(file: File) {
         })
     }
 
-    function setImageToCanvas(path :string) {
+    function setImageToCanvas(path: string) {
         const image = new Image();
         image.src = path;
         image.onload = function () {
             const canvas = document.getElementById("canvasImage") as HTMLCanvasElement;
-            const context = canvas.getContext("2d");
+            let context = canvas.getContext("2d");
             canvas.width = image.width;
             canvas.height = image.height;
-            context?.drawImage(image, 0, 0);
+            text.value = "canvas width " + canvas.width + "\n";
+            if (context != null) {
+                context.drawImage(image, 0, 0);
+                context.fillStyle = "red";
+                const { x_pix, y_pix } = dot(1.6 + cameraCalib.posX_m, 1.8 - cameraCalib.posY_m, 6 - cameraCalib.posZ_m);
+                text.value += x_pix + " " + y_pix;
+                context.fillRect(x_pix, y_pix, 10, 10);
+            }
+        }
+
+        // memo: 歪みやら切り出しやら考えると↓ではあってないと思う。
+        // function convert(x_m: number, y_m: number, z_m: number) {
+        //     const relativeX = -1 * cameraCalib.fx_pix * (x_m-cameraCalib.posX) / (z_m-cameraCalib.posZ);
+        //     const relativeY = cameraCalib.fy_pix * (y_m - cameraCalib.posY) / (z_m - cameraCalib.posZ);
+        //     const x_pix = cameraCalib.cx_pix + relativeX;
+        //     const y_pix = cameraCalib.cy_pix + relativeY;
+
+        //     return { x_pix, y_pix };
+        // }
+
+        function dot(x_m: number, y_m: number, z_m: number) {
+            const mat3x4 = projectionMatrix;
+            const mat3x1_0 = mat3x4[0][0] * x_m + mat3x4[0][1] * y_m + mat3x4[0][2] * z_m + mat3x4[0][3];
+            const mat3x1_1 = mat3x4[1][0] * x_m + mat3x4[1][1] * y_m + mat3x4[1][2] * z_m + mat3x4[1][3];
+            const mat3x1_2 = mat3x4[2][0] * x_m + mat3x4[2][1] * y_m + mat3x4[2][2] * z_m + mat3x4[2][3];
+            const x_pix = mat3x1_0 / mat3x1_2;
+            const y_pix = mat3x1_1 / mat3x1_2;
+
+            return { x_pix, y_pix };
         }
     }
 

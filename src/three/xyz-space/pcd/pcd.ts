@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { BufferGeometry, Float32BufferAttribute, Scene, Vector3 } from "three";
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
+import { distanceSensorCalib } from "../../rgb-image/load-calibrations";
 
 import { get3dSpaceSceneInstance } from "../xyz-space";
 
@@ -66,8 +67,6 @@ export function loadPcdAsString(file: File) {
         if (xyzVec.length > 0 && rgbVec.length > 0) {
             points.geometry.setAttribute("position", new Float32BufferAttribute(xyzVec, 3));
             points.geometry.setAttribute("color", new Float32BufferAttribute(rgbVec, 3));
-
-            toCenter(points.geometry);
         } else {
             alert("data is empty");
         }
@@ -115,7 +114,7 @@ export function loadPcdAsString(file: File) {
         for (let cnt = 0; cnt < points; cnt++) {
             const data = dataVec[cnt].split(" ");
             const x = parseFloat(data[1]);
-            const y = parseFloat(data[2]);
+            const y = parseFloat(data[2]) + distanceSensorCalib.posY_m;
             const z = parseFloat(data[0]);
             xyzVec.push(x);
             xyzVec.push(y);
@@ -130,17 +129,5 @@ export function loadPcdAsString(file: File) {
         }
 
         return { xyzVec, rgbVec };
-    }
-}
-
-// MEMO:geometryをそのままPointsに入れるとgeometryの中心を座標(0,0,0)に描画しているっぽい
-//      center計算して座標ずらす。
-function toCenter(geometry:BufferGeometry) {
-    geometry.computeBoundingBox();
-    if (geometry.boundingBox != null) {
-        const offset = new Vector3;
-        geometry.boundingBox.getCenter(offset).negate()
-        console.log(offset);
-        geometry.translate(0, offset.y, offset.z);
     }
 }

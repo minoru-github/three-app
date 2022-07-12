@@ -3,8 +3,8 @@ import { cameraCalib } from "../../rgb-image/load-calibrations";
 import { get3dSpaceSceneInstance } from "../xyz-space";
 
 export function drawCameraFov() {
-    addCameraMeshToScene(cameraCalib.posX, cameraCalib.posY, cameraCalib.posZ);
-    drawImageArea(cameraCalib.posX, cameraCalib.posY, cameraCalib.posZ);
+    addCameraMeshToScene(cameraCalib.posX_m, cameraCalib.posY_m, cameraCalib.posZ_m);
+    drawImageArea(cameraCalib.posX_m, cameraCalib.posY_m, cameraCalib.posZ_m);
 }
 
 function addCameraMeshToScene(x: number, y: number, z: number) {
@@ -16,25 +16,20 @@ function addCameraMeshToScene(x: number, y: number, z: number) {
     get3dSpaceSceneInstance().add(box);
 }
 
-function drawImageArea(x: number, y: number, z: number) {
-    const distance = 10;
-    const height = 2 * (cameraCalib.height * distance) / cameraCalib.fy_pix;
-    const width = 2 * (cameraCalib.width * distance) / cameraCalib.fx_pix;
-    console.log("imageArea w:{%f}, h:{%f}", width, height);
+function drawImageArea(x_m: number, y_m: number, z_m: number) {
+    const distance_m = 10;
+    const width_m = distance_m * Math.tan(cameraCalib.fovHorizontal_deg / 2 * Math.PI / 180);
+    const height_m = distance_m * Math.tan(cameraCalib.fovVertical_deg / 2 * Math.PI / 180);
 
-    const offsetX = cameraCalib.widthFull / 2 - cameraCalib.cx;
-    const offsetY = cameraCalib.heightFull / 2 - cameraCalib.cy;
-    console.log("offset X:{%f}, Y:{%f}", offsetX, offsetY);
-
-    const left = cameraCalib.posX + ((cameraCalib.width - offsetX) * distance) / cameraCalib.fx_pix;
-    const right = cameraCalib.posX - ((cameraCalib.width + offsetX) * distance) / cameraCalib.fx_pix;;
-    const down = cameraCalib.posY - ((cameraCalib.height - offsetY) * distance) / cameraCalib.fy_pix;
-    const up = cameraCalib.posY + ((cameraCalib.height + offsetY) * distance) / cameraCalib.fy_pix;
-    const leftdown = new THREE.Vector3(left, down, z + distance);
-    const leftUp = new THREE.Vector3(left, up, z + distance);
-    const rightdown = new THREE.Vector3(right, down, z + distance);
-    const rightUp = new THREE.Vector3(right, up, z + distance);
-    const cameraPos = new THREE.Vector3(x, y, z);
+    const left = cameraCalib.posX_m + width_m;
+    const right = cameraCalib.posX_m - width_m;
+    const down = cameraCalib.posY_m - height_m;
+    const up = cameraCalib.posY_m + height_m;
+    const leftdown = new THREE.Vector3(left, down, z_m + distance_m);
+    const leftUp = new THREE.Vector3(left, up, z_m + distance_m);
+    const rightdown = new THREE.Vector3(right, down, z_m + distance_m);
+    const rightUp = new THREE.Vector3(right, up, z_m + distance_m);
+    const cameraPos = new THREE.Vector3(x_m, y_m, z_m);
 
     const points = [];
     points.push(leftdown);

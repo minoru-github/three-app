@@ -12,13 +12,13 @@ export function createAnnotatedBox(xWorld: number, yWorld: number, zWorld: numbe
     boxId++;
 
     let dist = getDistanceCameraToRgbImage();
-    const xImage = dist * calculateTangent(cameraCalib.posX, xWorld);
-    const yImage = dist * calculateTangent(cameraCalib.posY, yWorld);
+    const xImage = dist * calculateTangent(cameraCalib.posX_m, xWorld);
+    const yImage = dist * calculateTangent(cameraCalib.posY_m, yWorld);
     console.log("world (x, y, z) : (%f, %f, %f), image (x,y) : (%f, %f)", xWorld, yWorld, zWorld, xImage, yImage);
     box.position.set(xImage, yImage, 0);
 
     function calculateTangent(posCamera: number, posWorld: number) {
-        return (posWorld - posCamera) / (zWorld - cameraCalib.posZ);
+        return (posWorld - posCamera) / (zWorld - cameraCalib.posZ_m);
     }
 
     return box;
