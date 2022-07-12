@@ -84,7 +84,6 @@ export function loadPcdAsString(file: File) {
         let points = 0;
         if (matchResultOfPoints != null) {
             points = parseInt(matchResultOfPoints[1]);
-            console.log(points);
         }
 
         // とりあえずascii固定
