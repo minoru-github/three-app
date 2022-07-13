@@ -39,53 +39,46 @@ function addAnnotationBox(event: MouseEvent) {
 
 function setBox() {
     // TODO: 右手座標系から左手座標系に変える
-    const points = createPoints(box3d.center_m);
+    const points = createPoints(box3d.center_m, box3d.size_m);
     addAnnotationBoxTo3dSpace(points);
     addAnnotationBoxToImage(points);
 }
 
 function setBox0() {
-    box3d.center_m.x = 4;
-    box3d.center_m.y = 0.8;
-    box3d.center_m.z = 7;
-    const points = createPoints(box3d.center_m);
+    const center_m = new THREE.Vector3(4.2, 0.6, 7.2);
+    const size_m = new THREE.Vector3(0.3, 1.2, 0.6);
+    const points = createPoints(center_m, size_m);
     addAnnotationBoxTo3dSpace(points);
     addAnnotationBoxToImage(points);
 }
 
 function setBox1() {
-    box3d.center_m.x = -2.2;
-    box3d.center_m.y = 1.0;
-    box3d.center_m.z = 5.8;
-    const points = createPoints(box3d.center_m);
+    const center_m = new THREE.Vector3(-2.2, 1.0, 5.7);
+    const size_m = new THREE.Vector3(0.6, 1.6, 1.6);
+    const points = createPoints(center_m, size_m);
     addAnnotationBoxTo3dSpace(points);
     addAnnotationBoxToImage(points);
 }
 
 function setBox2() {
-    box3d.center_m.x = -7.0;
-    box3d.center_m.y = 0.9;
-    box3d.center_m.z = 8.6;
-    const points = createPoints(box3d.center_m);
+    const center_m = new THREE.Vector3(-7.0, 0.9, 8.5);
+    const size_m = new THREE.Vector3(0.6, 1.6, 1.0);
+    const points = createPoints(center_m, size_m);
     addAnnotationBoxTo3dSpace(points);
     addAnnotationBoxToImage(points);
 }
 
-function createPoints(center: THREE.Vector3) {
-    const sizeX = 0.6;
-    const sizeY = 1.6;
-    const sizeZ = 1.4;
-
+function createPoints(center: THREE.Vector3, size:THREE.Vector3) {
     const points = new Array<THREE.Vector3>;
-    const p0 = new THREE.Vector3(center.x - sizeX / 2, center.y - sizeY / 2, center.z - sizeZ / 2);
-    const p1 = new THREE.Vector3(center.x - sizeX / 2, center.y - sizeY / 2, center.z + sizeZ / 2);
-    const p2 = new THREE.Vector3(center.x + sizeX / 2, center.y - sizeY / 2, center.z + sizeZ / 2);
-    const p3 = new THREE.Vector3(center.x + sizeX / 2, center.y - sizeY / 2, center.z - sizeZ / 2);
+    const p0 = new THREE.Vector3(center.x - size.x / 2, center.y - size.y / 2, center.z - size.z / 2);
+    const p1 = new THREE.Vector3(center.x - size.x / 2, center.y - size.y / 2, center.z + size.z / 2);
+    const p2 = new THREE.Vector3(center.x + size.x / 2, center.y - size.y / 2, center.z + size.z / 2);
+    const p3 = new THREE.Vector3(center.x + size.x / 2, center.y - size.y / 2, center.z - size.z / 2);
 
-    const p4 = new THREE.Vector3(center.x - sizeX / 2, center.y + sizeY / 2, center.z - sizeZ / 2);
-    const p5 = new THREE.Vector3(center.x - sizeX / 2, center.y + sizeY / 2, center.z + sizeZ / 2);
-    const p6 = new THREE.Vector3(center.x + sizeX / 2, center.y + sizeY / 2, center.z + sizeZ / 2);
-    const p7 = new THREE.Vector3(center.x + sizeX / 2, center.y + sizeY / 2, center.z - sizeZ / 2);
+    const p4 = new THREE.Vector3(center.x - size.x / 2, center.y + size.y / 2, center.z - size.z / 2);
+    const p5 = new THREE.Vector3(center.x - size.x / 2, center.y + size.y / 2, center.z + size.z / 2);
+    const p6 = new THREE.Vector3(center.x + size.x / 2, center.y + size.y / 2, center.z + size.z / 2);
+    const p7 = new THREE.Vector3(center.x + size.x / 2, center.y + size.y / 2, center.z - size.z / 2);
 
     points.push(p0);
     points.push(p1);
@@ -114,6 +107,10 @@ export const box3d = {
     y_m: 0,
     z_m: 10,
     center_m: new THREE.Vector3(0, 0, 10),
+    w_m: 1,
+    h_m: 1.5,
+    d_m: 1,
+    size_m: new THREE.Vector3(1, 1.5, 1),
     set: function () { setBox() },
     set0: function () { setBox0() },
     set1: function () { setBox1() },
