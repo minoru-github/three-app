@@ -1,15 +1,10 @@
 import * as THREE from "three";
-import { camera } from "./load-calibrations";
 import { drawCameraFov } from "../xyz-space/camerasThreeJS/camera-fov";
 import { text } from "../../html/element";
 
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#rightImage') as HTMLCanvasElement
 });
-function setRendererParameter(imageWidth: number, imageHeight: number) {
-    renderer.setClearColor(0xffffff, 1);
-    renderer.setSize(imageWidth, imageHeight);
-}
 export function tickCameraImage() {
     if (cameraThreeJS != undefined) {
         renderer.render(scene, cameraThreeJS);
@@ -27,16 +22,6 @@ export function initImageScene() {
 }
 
 let cameraThreeJS = new THREE.PerspectiveCamera(0, 1, 0, 0);
-function createCamera(imageWidth: number, imageHeight: number) {
-    var nearPlane = 0.01;
-    var farPlane = 1000;
-    const fov = camera.left.fovHorizontal_deg;
-    const fovRad = fov * (Math.PI / 180);
-    cameraThreeJS = new THREE.PerspectiveCamera(fov, imageWidth / imageHeight, nearPlane, farPlane);
-    const distance_m = imageHeight / 2 / Math.tan(fovRad/2);
-    cameraThreeJS.position.z = distance_m;
-}
-
 export function getDistanceCameraToRgbImage() {
     return cameraThreeJS.position.z;
 }

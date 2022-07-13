@@ -65,14 +65,14 @@ function setBox1() {
 function setBox2() {
     const center_m = new THREE.Vector3(-6.3, 0.0, 8.7);
     const size_m = new THREE.Vector3(0.6, 1.68, 1.0);
-    const rotation = new Rotation(0.0, 30.0, 0);
+    const rotation = new Rotation(0.0, 35.0, 0);
     const points = createLinePoints(center_m, size_m, rotation);
     addAnnotationBoxTo3dSpace(points);
     addAnnotationBoxToImage(points);
 }
 
 function setBox3() {
-    const center_m = new THREE.Vector3(4.8, 0.0, 7.44);
+    const center_m = new THREE.Vector3(4.8, 0.1, 7.44);
     const size_m = new THREE.Vector3(0.3, 1.2, 0.6);
     const rotation = new Rotation(0.0, 0.0, 0);
     const points = createLinePoints(center_m, size_m, rotation);

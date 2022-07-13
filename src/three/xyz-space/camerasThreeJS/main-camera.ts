@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Scene } from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import { camera } from '../../rgb-image/load-calibrations';
+import { camera } from '../../rgb-image/camera';
 
 const canvas = document.getElementById("mainCameraCanvas") as HTMLCanvasElement;
 

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { camera } from "../../rgb-image/load-calibrations";
+import { camera } from "../../rgb-image/camera";
 import { get3dSpaceSceneInstance } from "../xyz-space";
 
 export function drawCameraFov() {
