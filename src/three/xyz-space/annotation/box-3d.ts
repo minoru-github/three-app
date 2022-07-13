@@ -45,7 +45,7 @@ function setBox() {
 }
 
 function setBox0() {
-    const center_m = new THREE.Vector3(4.0, -0.1, 13.4);
+    const center_m = new THREE.Vector3(4.65, -0.1, 13.67);
     const size_m = new THREE.Vector3(1.8, 1.9, 4.4);
     const rotation = new Rotation(0.0, 32.0, 0);
     const points = createLinePoints(center_m, size_m, rotation);
@@ -54,7 +54,7 @@ function setBox0() {
 }
 
 function setBox1() {
-    const center_m = new THREE.Vector3(-2.3, 0.0, 5.7);
+    const center_m = new THREE.Vector3(-1.65, 0.0, 5.97);
     const size_m = new THREE.Vector3(0.6, 1.75, 1.6);
     const rotation = new Rotation(0.0, 6.0, 0);
     const points = createLinePoints(center_m, size_m, rotation);
@@ -63,7 +63,7 @@ function setBox1() {
 }
 
 function setBox2() {
-    const center_m = new THREE.Vector3(-6.9, 0.0, 8.5);
+    const center_m = new THREE.Vector3(-6.3, 0.0, 8.7);
     const size_m = new THREE.Vector3(0.6, 1.68, 1.0);
     const rotation = new Rotation(0.0, 30.0, 0);
     const points = createLinePoints(center_m, size_m, rotation);
@@ -72,7 +72,7 @@ function setBox2() {
 }
 
 function setBox3() {
-    const center_m = new THREE.Vector3(4.2, 0.0, 7.2);
+    const center_m = new THREE.Vector3(4.8, 0.0, 7.44);
     const size_m = new THREE.Vector3(0.3, 1.2, 0.6);
     const rotation = new Rotation(0.0, 0.0, 0);
     const points = createLinePoints(center_m, size_m, rotation);
