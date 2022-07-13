@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { BufferGeometry, Float32BufferAttribute, Scene, Vector3 } from "three";
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
-import { distanceSensorCalib } from "../../rgb-image/load-calibrations";
 
 import { get3dSpaceSceneInstance } from "../xyz-space";
 
@@ -113,7 +112,7 @@ export function loadPcdAsString(file: File) {
         for (let cnt = 0; cnt < points; cnt++) {
             const data = dataVec[cnt].split(" ");
             const x = parseFloat(data[1]);
-            const y = parseFloat(data[2]) + distanceSensorCalib.posY_m;
+            const y = parseFloat(data[2]);
             const z = parseFloat(data[0]);
             xyzVec.push(x);
             xyzVec.push(y);

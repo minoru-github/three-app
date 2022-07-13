@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { text } from "../../html/element";
 import { cameraCalib, projectionMatrix } from "./load-calibrations";
 import { getDistanceCameraToRgbImage, addObjectToImageScene } from "./rgb-image";
 
@@ -13,7 +14,7 @@ export function addAnnotationBoxToImage(x_m: number, y_m: number, z_m: number) {
 
         const sizeX = 0.6;
         const sizeY = 1.6;
-        const sizeZ = 1.0;
+        const sizeZ = 1.4;
 
         const center = new THREE.Vector3(x_m, y_m, z_m);
         const points = [];
@@ -46,23 +47,19 @@ export function addAnnotationBoxToImage(x_m: number, y_m: number, z_m: number) {
         points.push(p7);
         points.push(p3);
 
-        console.log(points);
         context.beginPath();
         context.strokeStyle = "#00FFFF";
-        for (let index = 0; index < points.length; index++){
+        for (let index = 0; index < points.length; index++) {
             const p = points[index];
-            const { x_pix, y_pix } = dot(p.x - cameraCalib.posX_m, p.y - cameraCalib.posY_m, p.z - cameraCalib.posZ_m);
-            const yReversed_pix = cameraCalib.height_pix - y_pix;
+            const { x_pix, y_pix } = dot(-p.x, -p.y, p.z);
+            text.value = "x_pix: " + x_pix + ", y_pix: " + y_pix; 
+
             if (index == 0) {
-                context.moveTo(x_pix, yReversed_pix);
+                context.moveTo(x_pix, y_pix);
             }
-            context.lineTo(x_pix, yReversed_pix);
-            //context.fillRect(x_pix, cameraCalib.height_pix - y_pix, 5, 5);
+            context.lineTo(x_pix, y_pix);
         }
         context.stroke();
-
-        // const { x_pix, y_pix } = dot(x_m - cameraCalib.posX_m, y_m - cameraCalib.posY_m, z_m - cameraCalib.posZ_m);
-        // context.fillRect(x_pix, cameraCalib.height_pix - y_pix, 10, 10);
     }
 
     //addObjectToImageScene(box);

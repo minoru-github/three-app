@@ -9,12 +9,8 @@ export const cameraCalib = {
     fovHorizontal_deg: 90,
     fovVertical_deg: 90 * (375 / 1242),
     posX_m: 0.06,
-    posY_m: 1.65,
+    posY_m: -0.08,
     posZ_m: 0.27,
-}
-
-export const distanceSensorCalib = {
-    posY_m: 1.73
 }
 
 export const projectionMatrix = [

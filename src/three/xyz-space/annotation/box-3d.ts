@@ -20,12 +20,12 @@ function addAnnotationBoxTo3dSpace(x_m: number, y_m: number, z_m: number) {
     const p1 = new THREE.Vector3(center.x - sizeX / 2, center.y - sizeY / 2, center.z + sizeZ / 2);
     const p2 = new THREE.Vector3(center.x + sizeX / 2, center.y - sizeY / 2, center.z + sizeZ / 2);
     const p3 = new THREE.Vector3(center.x + sizeX / 2, center.y - sizeY / 2, center.z - sizeZ / 2);
-    
+
     const p4 = new THREE.Vector3(center.x - sizeX / 2, center.y + sizeY / 2, center.z - sizeZ / 2);
     const p5 = new THREE.Vector3(center.x - sizeX / 2, center.y + sizeY / 2, center.z + sizeZ / 2);
     const p6 = new THREE.Vector3(center.x + sizeX / 2, center.y + sizeY / 2, center.z + sizeZ / 2);
     const p7 = new THREE.Vector3(center.x + sizeX / 2, center.y + sizeY / 2, center.z - sizeZ / 2);
-    
+
     points.push(p0);
     points.push(p1);
     points.push(p2);
@@ -75,12 +75,40 @@ function addAnnotationBox(event: MouseEvent) {
 function setBox() {
     // TODO: 右手座標系から左手座標系に変える
     addAnnotationBoxTo3dSpace(box3d.x_m, box3d.y_m, box3d.z_m);
-    addAnnotationBoxToImage(-box3d.x_m, box3d.y_m, box3d.z_m);
+    addAnnotationBoxToImage(box3d.x_m, box3d.y_m, box3d.z_m);
 }
 
+function setBox0() {
+    const x_m = 0 + (-0.06);
+    const y_m = 0 + (-0.73);
+    const z_m = 17 + (0.27);
+    addAnnotationBoxTo3dSpace(x_m, y_m, z_m);
+    addAnnotationBoxToImage(x_m, y_m, z_m);
+}
+
+function setBox1() {
+    const x_m = -1.7;
+    const y_m = -0.73;
+    const z_m = 6.0;
+    addAnnotationBoxTo3dSpace(x_m, y_m, z_m);
+    addAnnotationBoxToImage(x_m, y_m, z_m);
+}
+
+function setBox2() {
+    const x_m = -6.5;
+    const y_m = -0.76;
+    const z_m = 9.0;
+    addAnnotationBoxTo3dSpace(x_m, y_m, z_m);
+    addAnnotationBoxToImage(x_m, y_m, z_m);
+}
+
+
 export const box3d = {
-    x_m: -1.62,
-    y_m: 1.0,
-    z_m: 6,
-    set: function () { setBox() }
+    x_m: 0 + (-0.06),
+    y_m: 0 + (-0.73),
+    z_m: 17 + (0.27),
+    set: function () { setBox() },
+    set0: function () { setBox0() },
+    set1: function () { setBox1() },
+    set2: function () { setBox2() },
 }

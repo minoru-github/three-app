@@ -10,4 +10,8 @@ export function initGUI() {
     gui.add(box3d, "y_m");
     gui.add(box3d, "z_m");
     gui.add(box3d, "set")
+    gui.add(box3d, "set0")
+    gui.add(box3d, "set1")
+    gui.add(box3d, "set2")
+
 }
