@@ -1,30 +1,27 @@
 import * as THREE from "three";
-import { cameraCalib } from "./load-calibrations";
-import { getDistanceCameraToRgbImage, addObjectToImageScene } from "./rgb-image";
+import { projectToImage } from "../xyz-space/pcd/depth-sensor";
 
-// 箱を作成(デバッグ用)
-let boxId = 0;
-export function createAnnotatedBox(xWorld: number, yWorld: number, zWorld: number) {
-    const geometry = new THREE.BoxGeometry(10, 20, 10);
-    const material = new THREE.MeshBasicMaterial({ color: 0xFF0000, wireframe: true });
-    const box = new THREE.Mesh(geometry, material);
-    box.name = "rgb image box-" + boxId;
-    boxId++;
+//let boxId = 0;
+export function addAnnotationBoxToImage(points: THREE.Vector3[]) {
+    // TODO: THREE.Vector3()にしてboxIdで管理
+    const canvas = document.getElementById("canvasImage") as HTMLCanvasElement;
+    let context = canvas.getContext("2d");
+    if (context != null) {
+        context.fillStyle = "red";
+        context.beginPath();
+        context.strokeStyle = "#00FFFF";
+        for (let index = 0; index < points.length; index++) {
+            const p = points[index];
+            const { x_pix, y_pix } = projectToImage(p.x, p.y, p.z);
 
-    let dist = getDistanceCameraToRgbImage();
-    const xImage = dist * calculateTangent(cameraCalib.posX, xWorld);
-    const yImage = dist * calculateTangent(cameraCalib.posY, yWorld);
-    console.log("world (x, y, z) : (%f, %f, %f), image (x,y) : (%f, %f)", xWorld, yWorld, zWorld, xImage, yImage);
-    box.position.set(xImage, yImage, 0);
-
-    function calculateTangent(posCamera: number, posWorld: number) {
-        return (posWorld - posCamera) / (zWorld - cameraCalib.posZ);
+            if (index == 0) {
+                context.moveTo(x_pix, y_pix);
+            }
+            context.lineTo(x_pix, y_pix);
+        }
+        context.stroke();
     }
 
-    return box;
-}
+    //addObjectToImageScene(box);
 
-export function addAnnotationBoxToImageScene(xWorld: number, yWorld: number, zWorld: number) {
-    const box = createAnnotatedBox(xWorld, yWorld, zWorld);
-    addObjectToImageScene(box);
 }

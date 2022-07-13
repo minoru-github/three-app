@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { cameraCalib } from "./load-calibrations";
 import { drawCameraFov } from "../xyz-space/cameras/camera-fov";
+import { text } from "../../html/element";
 
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#rightImage') as HTMLCanvasElement
@@ -29,11 +30,11 @@ let camera = new THREE.PerspectiveCamera(0, 1, 0, 0);
 function createCamera(imageWidth: number, imageHeight: number) {
     var nearPlane = 0.01;
     var farPlane = 1000;
-    const fov = cameraCalib.fovHorizontal;
-    const fovRad = (fov / 2) * (Math.PI / 180);
-    const dist = imageHeight / 2 / Math.tan(fovRad);
+    const fov = cameraCalib.fovHorizontal_deg;
+    const fovRad = fov * (Math.PI / 180);
     camera = new THREE.PerspectiveCamera(fov, imageWidth / imageHeight, nearPlane, farPlane);
-    camera.position.z = dist;
+    const distance_m = imageHeight / 2 / Math.tan(fovRad/2);
+    camera.position.z = distance_m;
 }
 
 export function getDistanceCameraToRgbImage() {
@@ -45,7 +46,7 @@ export function drawRgbImages(file: File) {
     const promise = createDataURL(file);
     promise.then((path: string) => {
         initImageScene();
-        addImage(path);
+        setImageToCanvas(path);
     })
 
     drawCameraFov();
@@ -63,28 +64,18 @@ export function drawRgbImages(file: File) {
         return promise;
     }
 
-    function addImage(path: string) {
-        const loader = new THREE.TextureLoader();
-        loader.load(path, (texture) => {
-            const width = texture.image.width;
-            const height = texture.image.height;
-
-            setCanvasSieze(width, height);
-            createCamera(width, height);
-            setRendererParameter(width, height);
-
-            const geometry = new THREE.PlaneGeometry(1, 1);
-            const material = new THREE.MeshPhongMaterial({ map: texture, transparent: true, opacity: 0.6 });
-            const imagePlane = new THREE.Mesh(geometry, material);
-            imagePlane.scale.set(width, height, 1);
-            addObjectToImageScene(imagePlane);
-
-            function setCanvasSieze(imageWidth: number, imageHeight: number) {
-                const canvas = document.getElementById("rightImage") as HTMLCanvasElement;
-                canvas.width = imageWidth;
-                canvas.height = imageHeight;
+    function setImageToCanvas(path: string) {
+        const image = new Image();
+        image.src = path;
+        image.onload = function () {
+            const canvas = document.getElementById("canvasImage") as HTMLCanvasElement;
+            let context = canvas.getContext("2d");
+            canvas.width = image.width;
+            canvas.height = image.height;
+            text.value = "canvas width " + canvas.width + "\n";
+            if (context != null) {
+                context.drawImage(image, 0, 0);
             }
-        })
+        }
     }
-
 }
