@@ -4,7 +4,7 @@ import { projectToImage } from "../xyz-space/pcd/depth-sensor";
 //let boxId = 0;
 export function addAnnotationBoxToImage(points: THREE.Vector3[]) {
     // TODO: THREE.Vector3()にしてboxIdで管理
-    const canvas = document.getElementById("canvasImage") as HTMLCanvasElement;
+    const canvas = document.getElementById("leftImage") as HTMLCanvasElement;
     let context = canvas.getContext("2d");
     if (context != null) {
         context.fillStyle = "red";

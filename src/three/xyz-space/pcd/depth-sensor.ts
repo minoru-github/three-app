@@ -17,10 +17,10 @@ export function projectToImage(x_m: number, y_m: number, z_m: number) {
 
     // memo: ステカメ用。作りかけ。
     // function convert(x_m: number, y_m: number, z_m: number) {
-    //     const relativeX = -1 * cameraCalib.fx_pix * (x_m-cameraCalib.posX) / (z_m-cameraCalib.posZ);
-    //     const relativeY = cameraCalib.fy_pix * (y_m - cameraCalib.posY) / (z_m - cameraCalib.posZ);
-    //     const x_pix = cameraCalib.cx_pix + relativeX;
-    //     const y_pix = cameraCalib.cy_pix + relativeY;
+    //     const relativeX = -1 * camera.fx_pix * (x_m-camera.posX) / (z_m-camera.posZ);
+    //     const relativeY = camera.fy_pix * (y_m - camera.posY) / (z_m - camera.posZ);
+    //     const x_pix = camera.cx_pix + relativeX;
+    //     const y_pix = camera.cy_pix + relativeY;
 
     //     return { x_pix, y_pix };
     // }

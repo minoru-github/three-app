@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { cameraCalib } from "./load-calibrations";
-import { drawCameraFov } from "../xyz-space/cameras/camera-fov";
+import { camera } from "./load-calibrations";
+import { drawCameraFov } from "../xyz-space/camerasThreeJS/camera-fov";
 import { text } from "../../html/element";
 
 const renderer = new THREE.WebGLRenderer({
@@ -11,8 +11,8 @@ function setRendererParameter(imageWidth: number, imageHeight: number) {
     renderer.setSize(imageWidth, imageHeight);
 }
 export function tickCameraImage() {
-    if (camera != undefined) {
-        renderer.render(scene, camera);
+    if (cameraThreeJS != undefined) {
+        renderer.render(scene, cameraThreeJS);
     }
 }
 
@@ -26,19 +26,19 @@ export function initImageScene() {
     scene.add(light);
 }
 
-let camera = new THREE.PerspectiveCamera(0, 1, 0, 0);
+let cameraThreeJS = new THREE.PerspectiveCamera(0, 1, 0, 0);
 function createCamera(imageWidth: number, imageHeight: number) {
     var nearPlane = 0.01;
     var farPlane = 1000;
-    const fov = cameraCalib.fovHorizontal_deg;
+    const fov = camera.left.fovHorizontal_deg;
     const fovRad = fov * (Math.PI / 180);
-    camera = new THREE.PerspectiveCamera(fov, imageWidth / imageHeight, nearPlane, farPlane);
+    cameraThreeJS = new THREE.PerspectiveCamera(fov, imageWidth / imageHeight, nearPlane, farPlane);
     const distance_m = imageHeight / 2 / Math.tan(fovRad/2);
-    camera.position.z = distance_m;
+    cameraThreeJS.position.z = distance_m;
 }
 
 export function getDistanceCameraToRgbImage() {
-    return camera.position.z;
+    return cameraThreeJS.position.z;
 }
 
 export function drawRgbImages(file: File) {
@@ -68,7 +68,7 @@ export function drawRgbImages(file: File) {
         const image = new Image();
         image.src = path;
         image.onload = function () {
-            const canvas = document.getElementById("canvasImage") as HTMLCanvasElement;
+            const canvas = document.getElementById("leftImage") as HTMLCanvasElement;
             let context = canvas.getContext("2d");
             canvas.width = image.width;
             canvas.height = image.height;

@@ -1,10 +1,10 @@
 import * as THREE from "three";
 import { Scene } from "three";
 
-import { tickMainCamera } from "./cameras/main-camera";
-import { tickTopCamera } from './cameras/top-camera';
-import { tickFrontCamera } from './cameras/front-camera';
-import { tickSideCamera } from './cameras/side-camera';
+import { tickMainCamera } from "./camerasThreeJS/main-camera";
+import { tickTopCamera } from './camerasThreeJS/top-camera';
+import { tickFrontCamera } from './camerasThreeJS/front-camera';
+import { tickSideCamera } from './camerasThreeJS/side-camera';
 
 // シーンを作成
 const scene = new THREE.Scene();
