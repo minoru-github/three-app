@@ -1,30 +1,30 @@
 import * as THREE from "three";
-import { cameraCalib } from "../../rgb-image/load-calibrations";
+import { camera } from "../../rgb-image/camera";
 import { get3dSpaceSceneInstance } from "../xyz-space";
 
 export function drawCameraFov() {
-    addCameraMeshToScene(cameraCalib.posX_m, cameraCalib.posY_m, cameraCalib.posZ_m);
-    drawImageArea(cameraCalib.posX_m, cameraCalib.posY_m, cameraCalib.posZ_m);
+    addCameraMeshToScene(camera.left.posX_m, camera.left.posY_m, camera.left.posZ_m);
+    drawImageArea(camera.left.posX_m, camera.left.posY_m, camera.left.posZ_m);
 }
 
 function addCameraMeshToScene(x: number, y: number, z: number) {
     const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
     const material = new THREE.MeshBasicMaterial({ color: 0xFF0000 });
     const box = new THREE.Mesh(geometry, material);
-    box.name = "camera";
+    box.name = "cameraThreeJS";
     box.position.set(x, y, z);
     get3dSpaceSceneInstance().add(box);
 }
 
 function drawImageArea(x_m: number, y_m: number, z_m: number) {
     const distance_m = 10;
-    const width_m = distance_m * Math.tan(cameraCalib.fovHorizontal_deg / 2 * Math.PI / 180);
-    const height_m = distance_m * Math.tan(cameraCalib.fovVertical_deg / 2 * Math.PI / 180);
+    const width_m = distance_m * Math.tan(camera.left.fovHorizontal_deg / 2 * Math.PI / 180);
+    const height_m = distance_m * Math.tan(camera.left.fovVertical_deg / 2 * Math.PI / 180);
 
-    const left = cameraCalib.posX_m + width_m;
-    const right = cameraCalib.posX_m - width_m;
-    const down = cameraCalib.posY_m - height_m;
-    const up = cameraCalib.posY_m + height_m;
+    const left = camera.left.posX_m + width_m;
+    const right = camera.left.posX_m - width_m;
+    const down = camera.left.posY_m - height_m;
+    const up = camera.left.posY_m + height_m;
     const leftdown = new THREE.Vector3(left, down, z_m + distance_m);
     const leftUp = new THREE.Vector3(left, up, z_m + distance_m);
     const rightdown = new THREE.Vector3(right, down, z_m + distance_m);

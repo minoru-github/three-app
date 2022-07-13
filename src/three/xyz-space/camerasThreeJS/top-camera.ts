@@ -12,9 +12,9 @@ renderer.setSize(canvas.width, canvas.height);
 const orthographicCamera = new THREE.OrthographicCamera(-canvas.width / 20, canvas.width / 20, canvas.height / 20, -canvas.height / 20, -1000, 1000);
 orthographicCamera.position.set(0, 1, 0);
 
-const camera = orthographicCamera;
-camera.lookAt(new THREE.Vector3(0, 0, 0));
+const cameraThreeJS = orthographicCamera;
+cameraThreeJS.lookAt(new THREE.Vector3(0, 0, 0));
 
 export function tickTopCamera(scene: Scene) {
-    renderer.render(scene, camera);
+    renderer.render(scene, cameraThreeJS);
 }
