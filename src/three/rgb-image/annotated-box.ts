@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { text } from "../../html/element";
 import { projectToImage } from "../xyz-space/pcd/depth-sensor";
 
 //let boxId = 0;
@@ -13,9 +12,7 @@ export function addAnnotationBoxToImage(points: THREE.Vector3[]) {
         context.strokeStyle = "#00FFFF";
         for (let index = 0; index < points.length; index++) {
             const p = points[index];
-
             const { x_pix, y_pix } = projectToImage(p.x, p.y, p.z);
-            text.value = "x_pix: " + x_pix + ", y_pix: " + y_pix;
 
             if (index == 0) {
                 context.moveTo(x_pix, y_pix);
