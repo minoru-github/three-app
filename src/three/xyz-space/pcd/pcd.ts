@@ -1,9 +1,9 @@
 import * as THREE from "three";
-import { BufferGeometry, Float32BufferAttribute, Scene, Vector3 } from "three";
+import { Float32BufferAttribute, Scene } from "three";
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
 
 import { get3dSpaceSceneInstance } from "../xyz-space";
-
+import { toOrigin } from "./depth-sensor";
 import { text } from "../../../html/element";
 
 function loadPcdAsDataURL(file: File) {
@@ -95,7 +95,7 @@ export function loadPcdAsString(file: File) {
         } else {
             console.assert("改行コードが異常");
         }
-        
+
         const xyzVec = [];
         const rgbVec = [];
 
@@ -111,16 +111,15 @@ export function loadPcdAsString(file: File) {
 
         for (let cnt = 0; cnt < points; cnt++) {
             const data = dataVec[cnt].split(" ");
-            const x = parseFloat(data[1]);
-            const y = parseFloat(data[2]);
-            const z = parseFloat(data[0]);
-            xyzVec.push(x);
-            xyzVec.push(y);
-            xyzVec.push(z);
+            const { x_m, y_m, z_m } = toOrigin(parseFloat(data[1]), parseFloat(data[2]), parseFloat(data[0]));
+            xyzVec.push(x_m);
+            xyzVec.push(y_m);
+            xyzVec.push(z_m);
 
             const r = 1.0;
             const g = 0.5;
             const b = 0.0;
+
             rgbVec.push(r);
             rgbVec.push(g);
             rgbVec.push(b);
@@ -129,3 +128,4 @@ export function loadPcdAsString(file: File) {
         return { xyzVec, rgbVec };
     }
 }
+
