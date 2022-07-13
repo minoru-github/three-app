@@ -51,7 +51,7 @@ export function addAnnotationBoxToImage(x_m: number, y_m: number, z_m: number) {
         context.strokeStyle = "#00FFFF";
         for (let index = 0; index < points.length; index++) {
             const p = points[index];
-            const { x_pix, y_pix } = dot(-p.x, -p.y, p.z);
+            const { x_pix, y_pix } = dot(-p.x, -(p.y-1.73), p.z);
             text.value = "x_pix: " + x_pix + ", y_pix: " + y_pix; 
 
             if (index == 0) {

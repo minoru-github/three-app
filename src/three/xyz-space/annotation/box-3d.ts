@@ -78,35 +78,40 @@ function setBox() {
     addAnnotationBoxToImage(box3d.x_m, box3d.y_m, box3d.z_m);
 }
 
+const offsetX_m = -0.06;
+const offsetY_m = 0.0;
+//const offsetY_m = -1.73;
+const offsetZ_m = -0.27;
+
 function setBox0() {
-    const x_m = 0 + (-0.06);
-    const y_m = 0 + (-0.73);
-    const z_m = 17 + (0.27);
+    const x_m = 0 + offsetX_m;
+    const y_m = 0.9 + offsetY_m;
+    const z_m = 17.3 + offsetZ_m;
     addAnnotationBoxTo3dSpace(x_m, y_m, z_m);
     addAnnotationBoxToImage(x_m, y_m, z_m);
 }
 
 function setBox1() {
-    const x_m = -1.7;
-    const y_m = -0.73;
-    const z_m = 6.0;
+    const x_m = -1.62 + offsetX_m;
+    const y_m = 1.0 + offsetY_m;
+    const z_m = 6.0 + offsetZ_m;
     addAnnotationBoxTo3dSpace(x_m, y_m, z_m);
     addAnnotationBoxToImage(x_m, y_m, z_m);
 }
 
 function setBox2() {
-    const x_m = -6.5;
-    const y_m = -0.76;
-    const z_m = 9.0;
+    const x_m = -6.5 + offsetX_m;
+    const y_m = 0.8 + offsetY_m;
+    const z_m = 9.2 + offsetZ_m;
     addAnnotationBoxTo3dSpace(x_m, y_m, z_m);
     addAnnotationBoxToImage(x_m, y_m, z_m);
 }
 
 
 export const box3d = {
-    x_m: 0 + (-0.06),
-    y_m: 0 + (-0.73),
-    z_m: 17 + (0.27),
+    x_m: 0 + offsetX_m,
+    y_m: 0 + offsetY_m,
+    z_m: 17 + offsetZ_m,
     set: function () { setBox() },
     set0: function () { setBox0() },
     set1: function () { setBox1() },

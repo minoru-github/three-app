@@ -9,7 +9,7 @@ export const cameraCalib = {
     fovHorizontal_deg: 90,
     fovVertical_deg: 90 * (375 / 1242),
     posX_m: 0.06,
-    posY_m: -0.08,
+    posY_m: 1.65,
     posZ_m: 0.27,
 }
 
