@@ -2,4 +2,3 @@ node_modules
 dist
 src/pcd_frames
 src/pcd
-src/kitti
