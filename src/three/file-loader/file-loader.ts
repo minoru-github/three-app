@@ -14,8 +14,6 @@ export function onChangeInputFiles(event: any) {
         } else if (file.name.match(/\.(png|bmp|jpg)/)) {
             imageFiles.push(file);
             drawRgbImages(file);
-            // TODO 左右画像描画対応
-            break;
         }
     }
 }

@@ -72,7 +72,7 @@ function setBox2() {
 }
 
 function setBox3() {
-    const center_m = new THREE.Vector3(4.8, 0.1, 7.44);
+    const center_m = new THREE.Vector3(4.8, 0.0, 7.44);
     const size_m = new THREE.Vector3(0.3, 1.2, 0.6);
     const rotation = new Rotation(0.0, 0.0, 0);
     const points = createLinePoints(center_m, size_m, rotation);
