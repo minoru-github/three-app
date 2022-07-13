@@ -1,36 +1,10 @@
-import * as THREE from "three";
 import { drawCameraFov } from "../xyz-space/camerasThreeJS/camera-fov";
 import { text } from "../../html/element";
-
-const renderer = new THREE.WebGLRenderer({
-    canvas: document.querySelector('#rightImage') as HTMLCanvasElement
-});
-export function tickCameraImage() {
-    if (cameraThreeJS != undefined) {
-        renderer.render(scene, cameraThreeJS);
-    }
-}
-
-const scene = new THREE.Scene();
-export function addObjectToImageScene(object: any) {
-    scene.add(object);
-}
-export function initImageScene() {
-    scene.clear();
-    const light = new THREE.AmbientLight(0xffffff);
-    scene.add(light);
-}
-
-let cameraThreeJS = new THREE.PerspectiveCamera(0, 1, 0, 0);
-export function getDistanceCameraToRgbImage() {
-    return cameraThreeJS.position.z;
-}
 
 export function drawRgbImages(file: File) {
     // TODO : 入力順で左右を決定しているのを汎用的な仕組みに変える
     const promise = createDataURL(file);
     promise.then((path: string) => {
-        initImageScene();
         setImageToCanvas(path);
     })
 
