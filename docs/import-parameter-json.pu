@@ -1,0 +1,22 @@
+@startjson "import-parameter-json"
+{
+    "camera": [
+        {
+            "kind":"left",
+            "width_pix" : 1242,
+            "height_pix" : 375
+        },
+        {
+            "kind":"right",
+            "width_pix" : 1242,
+            "height_pix" : 375
+        }
+    ],
+
+    "depth_sensor" : [
+        {
+            "kind":"lidar"
+        }
+    ]
+}
+@endjson
