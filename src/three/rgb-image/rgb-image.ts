@@ -1,6 +1,36 @@
 import { drawCameraFov } from "../xyz-space/camerasThreeJS/camera-fov";
 
-export function drawRgbImages(file: File) {
+export class RgbImage {
+    data: File[] = new Array();
+    calib: File[] = new Array();
+    frames: number = 0;
+    constructor() {
+        this.data = new Array<File>();
+        this.calib = new Array<File>();
+    }
+
+    addData(data: File) {
+        this.data.push(data);
+        this.frames += 1;
+    }
+
+    addCalib(calib: File) {
+        this.calib.push(calib);
+    }
+
+    draw(frame: number) {
+        if (this.frames < frame || this.data.length == 0) {
+            return;
+        }
+        drawRgbImages(this.data[frame]);
+    }
+
+    totalFrames() {
+        return this.frames;
+    }
+}
+
+function drawRgbImages(file: File) {
     const result = file.name.match(/left_image|right_image/);
     if (result == null) {
         return;

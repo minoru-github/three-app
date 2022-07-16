@@ -3,7 +3,7 @@ import { Float32BufferAttribute, Scene } from "three";
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
 
 import { get3dSpaceSceneInstance } from "../xyz-space";
-import { toOrigin } from "./depth-sensor";
+import { toOrigin } from "./depth";
 import { text } from "../../../html/element";
 
 function loadPcdAsDataURL(file: File) {
@@ -53,12 +53,6 @@ export function loadPcdAsString(file: File) {
 
         get3dSpaceSceneInstance().add(points);
     });
-
-    // https://github.com/fastlabel/AutomanTools/blob/bf1fe121298a88443afdb64fc5d3527553dc8da0/src/editor-module/utils/pcd-util.ts#L43
-    // https://www.sejuku.net/blog/21049
-    function parseHeader(data: string) {
-        data.indexOf("WIDTH");
-    }
 
     function addDataToPoints(pcdFile: string, points: THREE.Points) {
         const { xyzVec, rgbVec } = extractData(pcdFile);

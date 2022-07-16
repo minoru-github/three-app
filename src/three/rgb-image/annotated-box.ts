@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { toDepthSensorCoord } from "../xyz-space/pcd/depth-sensor";
+import { toDepthSensorCoord } from "../xyz-space/depth/depth";
 import { camera } from "./camera";
 
 //let boxId = 0;
