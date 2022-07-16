@@ -6,10 +6,9 @@ import { camera } from "./camera";
 export function addAnnotationBoxToImage(points: THREE.Vector3[]) {
     // TODO: THREE.Vector3()にしてboxIdで管理
 
-    const images = ["left", "right"];
+    const images = ["left_image", "right_image"];
     images.forEach(leftOrRight => {
-        const imageType = leftOrRight + "Image";
-        const canvas = document.getElementById(imageType) as HTMLCanvasElement;
+        const canvas = document.getElementById(leftOrRight) as HTMLCanvasElement;
         let context = canvas.getContext("2d");
         if (context != null) {
             context.fillStyle = "red";
@@ -43,7 +42,7 @@ function projectToImage(x_m: number, y_m: number, z_m: number, leftOrRight: stri
     function projectFromLidar(inX_m: number, inY_m: number, inZ_m: number, leftOrRight: string) {
         const { x_m, y_m, z_m } = toDepthSensorCoord(inX_m, inY_m, inZ_m);
         let mat3x4;
-        if (leftOrRight == "left") {
+        if (leftOrRight == "left_image") {
             mat3x4 = camera.left.projectionMatrix;
         } else {
             mat3x4 = camera.right.projectionMatrix;

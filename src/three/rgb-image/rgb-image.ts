@@ -1,13 +1,13 @@
 import { drawCameraFov } from "../xyz-space/camerasThreeJS/camera-fov";
 
 export function drawRgbImages(file: File) {
-    const result = file.name.match(/left|right/);
+    const result = file.name.match(/left_image|right_image/);
     if (result == null) {
         return;
     }
 
     const leftOrRight = result[0];
-    if (leftOrRight == "left") {
+    if (leftOrRight == "left_image") {
         drawCameraFov();
     }
 
@@ -33,8 +33,7 @@ export function drawRgbImages(file: File) {
         const image = new Image();
         image.src = path;
         image.onload = function () {
-            const imageType = leftOrRight + "Image";
-            const canvas = document.getElementById(imageType) as HTMLCanvasElement;
+            const canvas = document.getElementById(leftOrRight) as HTMLCanvasElement;
             let context = canvas.getContext("2d");
             canvas.width = image.width;
             canvas.height = image.height;
