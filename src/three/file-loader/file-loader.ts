@@ -19,12 +19,12 @@ export function onChangeInputFiles(event: any) {
                 right_image.addData(file);
             }
         } else if (file.name.match(/\.json/)) {
-            if (file.name.match(/ depth/)) {
-                depth.addCalib(file);
+            if (file.name.match(/depth/)) {
+                depth.setCalib(file);
             } else if (file.name.match(/left_image/)) {
-                left_image.addCalib(file);
+                left_image.setCalib(file);
             } else if (file.name.match(/right_image/)) {
-                right_image.addCalib(file);
+                right_image.setCalib(file);
             }
         }
     }

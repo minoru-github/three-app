@@ -2,11 +2,10 @@ import { drawCameraFov } from "../xyz-space/camerasThreeJS/camera-fov";
 
 export class RgbImage {
     data: File[] = new Array();
-    calib: File[] = new Array();
+    calib: File = new File([], "empty");
     frames: number = 0;
     constructor() {
         this.data = new Array<File>();
-        this.calib = new Array<File>();
     }
 
     addData(data: File) {
@@ -14,8 +13,8 @@ export class RgbImage {
         this.frames += 1;
     }
 
-    addCalib(calib: File) {
-        this.calib.push(calib);
+    setCalib(calib: File) {
+        this.calib = calib;
     }
 
     draw(frame: number) {

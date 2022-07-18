@@ -22,11 +22,10 @@ export function toDepthSensorCoord(inX_m: number, inY_m: number, inZ_m: number) 
 import { loadPcdAsString } from "./load-pcd";
 export class Depth {
     data: Array<File>;
-    calib: Array<File>;
+    calib: File = new File([],"empty");
     frames: number = 0;
     constructor() {
         this.data = new Array<File>();
-        this.calib = new Array<File>();
     }
 
     addData(data:File) {
@@ -34,14 +33,14 @@ export class Depth {
         this.frames += 1;
     }
 
-    addCalib(calib: File) {
-        this.calib.push(calib);
+    setCalib(calib: File) {
+        this.calib = calib;
     }
 
     draw(frame: number) {
-        if (this.frames < frame || this.data.length == 0) {
-            return;
-        }
+        console.assert(this.frames >= frame, "depth sensor : wrong frame is selected");
+        console.assert(this.data.length > 0, "depth sensor : data length is 0");
+        console.assert(this.calib.name != "empty", "depth sensor : calib is empty");
         loadPcdAsString(this.data[frame]);
     }
 
