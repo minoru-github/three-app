@@ -1,8 +1,5 @@
 import { depth } from "../xyz-space/depth/depth";
-import { RgbImage } from "../rgb-image/rgb-image";
-
-const left_image = new RgbImage();
-const right_image = new RgbImage();
+import { leftImage, rightImage } from "../rgb-image/rgb-image";
 
 export function onChangeInputFiles(event: any) {
     let files = event.target.files as FileList;
@@ -21,17 +18,17 @@ export function onChangeInputFiles(event: any) {
                 return resolve(depth.addData(file));
             } else if (file.name.match(/\.(png|bmp|jpg)/)) {
                 if (file.name.match(/left_image/)) {
-                    return resolve(left_image.addData(file));
+                    return resolve(leftImage.addData(file));
                 } else if (file.name.match(/right_image/)) {
-                    return resolve(right_image.addData(file));
+                    return resolve(rightImage.addData(file));
                 }
             } else if (file.name.match(/\.json/)) {
                 if (file.name.match(/depth/)) {
                     return resolve(depth.setCalib(file));
                 } else if (file.name.match(/left_image/)) {
-                    return resolve(left_image.setCalib(file));
+                    return resolve(leftImage.setCalib(file));
                 } else if (file.name.match(/right_image/)) {
-                    return resolve(right_image.setCalib(file));
+                    return resolve(rightImage.setCalib(file));
                 }
             }
         })
@@ -40,8 +37,8 @@ export function onChangeInputFiles(event: any) {
     Promise.all(results).then(() => {
         const frame = 0;
         depth.draw(frame);
-        left_image.draw(frame);
-        right_image.draw(frame);
+        leftImage.draw(frame);
+        rightImage.draw(frame);
     })
 
 }

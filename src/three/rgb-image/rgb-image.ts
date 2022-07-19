@@ -78,3 +78,6 @@ function drawRgbImages(file: File) {
         }
     }
 }
+
+export const leftImage = new RgbImage();
+export const rightImage = new RgbImage();
