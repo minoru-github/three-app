@@ -30,6 +30,9 @@ export function onChangeInputFiles(event: any) {
                 } else if (file.name.match(/right_image/)) {
                     return resolve(rightImage.setCalib(file));
                 }
+            } else {
+                // README.md等描画に関係ないファイル読み込んだとき用
+                return resolve(file);
             }
         })
     }
