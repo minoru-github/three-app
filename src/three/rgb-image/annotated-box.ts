@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { toDepthSensorCoord } from "../xyz-space/depth/depth";
+import { depth } from "../xyz-space/depth/depth";
 import { camera } from "./camera";
 
 //let boxId = 0;
@@ -40,7 +40,7 @@ function projectToImage(x_m: number, y_m: number, z_m: number, leftOrRight: stri
     return { x_pix, y_pix };
 
     function projectFromLidar(inX_m: number, inY_m: number, inZ_m: number, leftOrRight: string) {
-        const { x_m, y_m, z_m } = toDepthSensorCoord(inX_m, inY_m, inZ_m);
+        const { x_m, y_m, z_m } = depth.toDepthSensorCoord(inX_m, inY_m, inZ_m);
         let mat3x4;
         if (leftOrRight == "left_image") {
             mat3x4 = camera.left.projectionMatrix;

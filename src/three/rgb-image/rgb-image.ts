@@ -8,13 +8,19 @@ export class RgbImage {
         this.data = new Array<File>();
     }
 
-    addData(data: File) {
-        this.data.push(data);
-        this.frames += 1;
+    addData(file: File) {
+        return new Promise<File>((resolve) => {
+            this.data.push(file);
+            this.frames += 1;
+            resolve(file);
+        })
     }
 
-    setCalib(calib: File) {
-        this.calib = calib;
+    setCalib(file: File) {
+        return new Promise<File>((resolve) => {
+            this.calib = file;
+            resolve(file);
+        })
     }
 
     draw(frame: number) {

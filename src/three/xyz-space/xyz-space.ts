@@ -11,6 +11,9 @@ const scene = new THREE.Scene();
 export function get3dSpaceSceneInstance() {
     return scene;
 }
+export function addPointsToXyzSpace(points:THREE.Points) {
+    scene.add(points);
+}
 
 // ヘルパー追加
 addHelpers(scene);
