@@ -4,12 +4,10 @@ import { addPointsToXyzSpace } from "../xyz-space";
 
 class Depth {
     data: Array<File>;
-    sensor = {
-        position: {
-            x_m: 0,
-            y_m: 0,
-            z_m: 0
-        }
+    sensor_position = {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "z_m": 0.0
     };
     frames: number = 0;
     constructor() {
@@ -29,10 +27,9 @@ class Depth {
             const promise = file.text();
             promise.then((jsonString: string) => {
                 const json = JSON.parse(jsonString);
-                const sensor_position = json.sensor_position;
-                this.sensor.position.x_m = sensor_position.x_m;
-                this.sensor.position.y_m = sensor_position.y_m;
-                this.sensor.position.z_m = sensor_position.z_m;
+                this.sensor_position.x_m = json.sensor_position.x_m;
+                this.sensor_position.y_m = json.sensor_position.y_m;
+                this.sensor_position.z_m = json.sensor_position.z_m;
                 resolve(file);
             });
         })
@@ -101,9 +98,9 @@ class Depth {
 
                 for (let cnt = 0; cnt < points; cnt++) {
                     const data = dataVec[cnt].split(" ");
-                    const x_m = parseFloat(data[1]) + this.sensor.position.x_m;
-                    const y_m = parseFloat(data[2]) + this.sensor.position.y_m;
-                    const z_m = parseFloat(data[0]) + this.sensor.position.z_m;
+                    const x_m = parseFloat(data[1]) + this.sensor_position.x_m;
+                    const y_m = parseFloat(data[2]) + this.sensor_position.y_m;
+                    const z_m = parseFloat(data[0]) + this.sensor_position.z_m;
                     xyzVec.push(x_m);
                     xyzVec.push(y_m);
                     xyzVec.push(z_m);
@@ -136,9 +133,9 @@ class Depth {
 
     toDepthSensorCoord(inX_m: number, inY_m: number, inZ_m: number) {
         //  測距センサーから路面におろしたところを本ツールの原点(ステカメの場合は真ん中)とする。座標系はthree.jsに従う。
-        const x_m = inX_m - this.sensor.position.x_m;
-        const y_m = inY_m - this.sensor.position.y_m;
-        const z_m = inZ_m - this.sensor.position.z_m;
+        const x_m = inX_m - this.sensor_position.x_m;
+        const y_m = inY_m - this.sensor_position.y_m;
+        const z_m = inZ_m - this.sensor_position.z_m;
         return { x_m, y_m, z_m };
     }
 }

@@ -1,8 +1,12 @@
 import { drawCameraFov } from "../xyz-space/camerasThreeJS/camera-fov";
 
-export class RgbImage {
+class RgbImage {
     data: File[] = new Array();
-    calib: File = new File([], "empty");
+    sensor_position = {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "z_m": 0.0
+    };
     frames: number = 0;
     constructor() {
         this.data = new Array<File>();
@@ -18,8 +22,14 @@ export class RgbImage {
 
     setCalib(file: File) {
         return new Promise<File>((resolve) => {
-            this.calib = file;
-            resolve(file);
+            const promise = file.text();
+            promise.then((jsonString) => {
+                const json = JSON.parse(jsonString);
+                this.sensor_position.x_m = json.sensor_position.x_m;
+                this.sensor_position.y_m = json.sensor_position.y_m;
+                this.sensor_position.z_m = json.sensor_position.z_m;
+                resolve(file);
+            })
         })
     }
 
@@ -43,6 +53,7 @@ function drawRgbImages(file: File) {
 
     const leftOrRight = result[0];
     if (leftOrRight == "left_image") {
+        // TODO: json読み込みに変更
         drawCameraFov();
     }
 
@@ -64,7 +75,7 @@ function drawRgbImages(file: File) {
         return promise;
     }
 
-    function setImageToCanvas(path: string, leftOrRight:string) {
+    function setImageToCanvas(path: string, leftOrRight: string) {
         const image = new Image();
         image.src = path;
         image.onload = function () {
