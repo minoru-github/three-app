@@ -1,35 +1,35 @@
 import * as THREE from "three";
-import { camera } from "../../rgb-image/camera";
 import { get3dSpaceSceneInstance } from "../xyz-space";
+import { rightImage } from "../../rgb-image/rgb-image";
 
 export function drawCameraFov() {
-    addCameraMeshToScene(camera.left.posX_m, camera.left.posY_m, camera.left.posZ_m);
-    drawImageArea(camera.left.posX_m, camera.left.posY_m, camera.left.posZ_m);
+    addCameraMeshToScene(rightImage.sensor_position);
+    drawImageArea(rightImage.sensor_position, rightImage.fov);
 }
 
-function addCameraMeshToScene(x: number, y: number, z: number) {
+function addCameraMeshToScene(camera_pos : {x_m: number, y_m: number, z_m: number}) {
     const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
     const material = new THREE.MeshBasicMaterial({ color: 0xFF0000 });
     const box = new THREE.Mesh(geometry, material);
     box.name = "cameraThreeJS";
-    box.position.set(x, y, z);
+    box.position.set(camera_pos.x_m, camera_pos.y_m, camera_pos.z_m);
     get3dSpaceSceneInstance().add(box);
 }
 
-function drawImageArea(x_m: number, y_m: number, z_m: number) {
+function drawImageArea(camera_pos: { x_m: number, y_m: number, z_m: number }, fov: {x_rad:number,y_rad:number}) {
     const distance_m = 10;
-    const width_m = distance_m * Math.tan(camera.left.fovHorizontal_deg / 2 * Math.PI / 180);
-    const height_m = distance_m * Math.tan(camera.left.fovVertical_deg / 2 * Math.PI / 180);
+    const width_m = distance_m * Math.tan(fov.x_rad / 2);
+    const height_m = distance_m * Math.tan(fov.y_rad / 2);
 
-    const left = camera.left.posX_m + width_m;
-    const right = camera.left.posX_m - width_m;
-    const down = camera.left.posY_m - height_m;
-    const up = camera.left.posY_m + height_m;
-    const leftdown = new THREE.Vector3(left, down, z_m + distance_m);
-    const leftUp = new THREE.Vector3(left, up, z_m + distance_m);
-    const rightdown = new THREE.Vector3(right, down, z_m + distance_m);
-    const rightUp = new THREE.Vector3(right, up, z_m + distance_m);
-    const cameraPos = new THREE.Vector3(x_m, y_m, z_m);
+    const left = camera_pos.x_m + width_m;
+    const right = camera_pos.x_m - width_m;
+    const down = camera_pos.y_m - height_m;
+    const up = camera_pos.y_m + height_m;
+    const leftdown = new THREE.Vector3(left, down, camera_pos.z_m + distance_m);
+    const leftUp = new THREE.Vector3(left, up, camera_pos.z_m + distance_m);
+    const rightdown = new THREE.Vector3(right, down, camera_pos.z_m + distance_m);
+    const rightUp = new THREE.Vector3(right, up, camera_pos.z_m + distance_m);
+    const cameraPos = new THREE.Vector3(camera_pos.x_m, camera_pos.y_m, camera_pos.z_m);
 
     const points = [];
     points.push(leftdown);
