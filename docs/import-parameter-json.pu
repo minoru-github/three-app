@@ -21,7 +21,7 @@
             "fovx_deg" : 90
         }
         ,
-        "seonsor_position" : {
+        "sensor_position" : {
             "x_m" : 0.06,
             "y_m" : 1.65,
             "z_m" : 0.27
@@ -55,7 +55,7 @@
             "fovx_deg" : 90
         }
         ,
-        "seonsor_position" : {
+        "sensor_position" : {
             "x_m" : -0.54,
             "y_m" : 1.65,
             "z_m" : 0.27
@@ -71,7 +71,7 @@
 
     "depth" : {
         "kind":"lidar",
-        "seonsor_position" : {
+        "sensor_position" : {
             "x_m" : 0.0,
             "y_m" : 1.73,
             "z_m" : 0.0
