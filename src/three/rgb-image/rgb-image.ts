@@ -93,7 +93,9 @@ function drawRgbImages(file: File) {
 
     const leftOrRight = result[0];
     if (leftOrRight == "right_image") {
-        drawCameraFov();
+        drawCameraFov(rightImage.sensor_position,rightImage.fov);
+    } else {
+        drawCameraFov(leftImage.sensor_position, leftImage.fov);
     }
 
     const promise = createDataURL(file);
@@ -128,10 +130,6 @@ function drawRgbImages(file: File) {
         }
     }
 }
-
-
-
-
 
 export const leftImage = new RgbImage();
 export const rightImage = new RgbImage();

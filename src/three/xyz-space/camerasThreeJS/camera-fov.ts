@@ -1,13 +1,12 @@
 import * as THREE from "three";
 import { get3dSpaceSceneInstance } from "../xyz-space";
-import { rightImage } from "../../rgb-image/rgb-image";
 
-export function drawCameraFov() {
-    addCameraMeshToScene(rightImage.sensor_position);
-    drawImageArea(rightImage.sensor_position, rightImage.fov);
+export function drawCameraFov(camera_pos: { x_m: number, y_m: number, z_m: number }, fov: { x_rad: number, y_rad: number }) {
+    addCameraMeshToScene(camera_pos);
+    drawImageArea(camera_pos, fov);
 }
 
-function addCameraMeshToScene(camera_pos : {x_m: number, y_m: number, z_m: number}) {
+function addCameraMeshToScene(camera_pos: { x_m: number, y_m: number, z_m: number }) {
     const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
     const material = new THREE.MeshBasicMaterial({ color: 0xFF0000 });
     const box = new THREE.Mesh(geometry, material);
@@ -16,7 +15,7 @@ function addCameraMeshToScene(camera_pos : {x_m: number, y_m: number, z_m: numbe
     get3dSpaceSceneInstance().add(box);
 }
 
-function drawImageArea(camera_pos: { x_m: number, y_m: number, z_m: number }, fov: {x_rad:number,y_rad:number}) {
+function drawImageArea(camera_pos: { x_m: number, y_m: number, z_m: number }, fov: { x_rad: number, y_rad: number }) {
     const distance_m = 10;
     const width_m = distance_m * Math.tan(fov.x_rad / 2);
     const height_m = distance_m * Math.tan(fov.y_rad / 2);

@@ -31,5 +31,3 @@ export function addAnnotationBoxToImage(points: THREE.Vector3[]) {
         }
     });
 }
-
-
