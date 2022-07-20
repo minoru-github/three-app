@@ -11,6 +11,7 @@ const annotationBoxes = new Array<THREE.Mesh>;
 function addAnnotationBoxTo3dSpace(points: THREE.Vector3[]) {
     const material = new THREE.LineBasicMaterial({ color: 0x00FFFF });
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    geometry.name = "annotation";
     const line = new THREE.Line(geometry, material);
     get3dSpaceSceneInstance().add(line);
 

@@ -56,6 +56,7 @@ class Depth {
         const addPcdToPoints = (pcdFile: string) => {
             const createPoints = () => {
                 const geometry = new THREE.BufferGeometry();
+                geometry.name = "pcd";
                 const material = new THREE.PointsMaterial({ size: 0.1, vertexColors: true, color: 0xffffff });
                 const points = new THREE.Points(geometry, material);
                 return points;

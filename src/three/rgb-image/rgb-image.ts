@@ -39,8 +39,8 @@ class RgbImage {
                 this.sensor_position.x_m = json.sensor_position.x_m;
                 this.sensor_position.y_m = json.sensor_position.y_m;
                 this.sensor_position.z_m = json.sensor_position.z_m;
-                this.fov.x_deg = json.field_of_view.fovx;
-                this.fov.y_deg = json.field_of_view.fovx * (json.size.height_pix / json.size.width_pix);
+                this.fov.x_deg = json.field_of_view.fovx_deg;
+                this.fov.y_deg = json.field_of_view.fovx_deg * (json.size.height_pix / json.size.width_pix);
                 this.fov.x_rad = this.fov.x_deg * Math.PI / 180;
                 this.fov.y_rad = this.fov.y_deg * Math.PI / 180;
                 this.projection_matrix = json.projection_matrix;
@@ -92,8 +92,7 @@ function drawRgbImages(file: File) {
     }
 
     const leftOrRight = result[0];
-    if (leftOrRight == "left_image") {
-        // TODO: json読み込みに変更
+    if (leftOrRight == "right_image") {
         drawCameraFov();
     }
 

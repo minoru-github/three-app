@@ -48,6 +48,7 @@ function drawImageArea(camera_pos: { x_m: number, y_m: number, z_m: number }, fo
 
     const material = new THREE.LineBasicMaterial({ color: 0xFF00FF });
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    geometry.name = "line";
     const line = new THREE.Line(geometry, material);
     get3dSpaceSceneInstance().add(line);
 }
