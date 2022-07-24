@@ -5,10 +5,8 @@ import { addAnnotationBoxToImage } from "../../rgb-image/annotated-box";
 
 import { text } from "../../../html/element";
 
-function addAnnotationBoxTo3dSpace(box: THREE.Mesh) {
-    console.log(box.name);
-    get3dSpaceSceneInstance().add(box);
-}
+const groupBox = new THREE.Group;
+get3dSpaceSceneInstance().add(groupBox);
 
 // TODO: クリックでアノテボックス配置
 document.addEventListener('mousedown', addAnnotationBox, false);
@@ -29,8 +27,7 @@ function setBox() {
     const size_m = box3d.size_m;
     const rotation = box3d.rotation;
 
-    const box = createBox(center_m, size_m, rotation);
-    addAnnotationBoxTo3dSpace(box);
+    addBoxToGroup(center_m, size_m, rotation);
 
     const points = createLinePoints(center_m, size_m, rotation);
     addAnnotationBoxToImage(points);
@@ -40,8 +37,7 @@ function setBox0() {
     const center_m = new THREE.Vector3(4.65, -0.1, 13.67);
     const size_m = new THREE.Vector3(1.8, 1.9, 4.4);
     const rotation = new Rotation(0.0, 32.0, 0);
-    const box = createBox(center_m, size_m, rotation);
-    addAnnotationBoxTo3dSpace(box);
+    addBoxToGroup(center_m, size_m, rotation);
 
     const points = createLinePoints(center_m, size_m, rotation);
     addAnnotationBoxToImage(points);
@@ -51,8 +47,7 @@ function setBox1() {
     const center_m = new THREE.Vector3(-1.65, 0.0, 5.97);
     const size_m = new THREE.Vector3(0.6, 1.75, 1.6);
     const rotation = new Rotation(0.0, 6.0, 0);
-    const box = createBox(center_m, size_m, rotation);
-    addAnnotationBoxTo3dSpace(box);
+    addBoxToGroup(center_m, size_m, rotation);
 
     const points = createLinePoints(center_m, size_m, rotation);
     addAnnotationBoxToImage(points);
@@ -62,8 +57,7 @@ function setBox2() {
     const center_m = new THREE.Vector3(-6.3, 0.0, 8.7);
     const size_m = new THREE.Vector3(0.6, 1.68, 1.0);
     const rotation = new Rotation(0.0, 35.0, 0);
-    const box = createBox(center_m, size_m, rotation);
-    addAnnotationBoxTo3dSpace(box);
+    addBoxToGroup(center_m, size_m, rotation);
 
     const points = createLinePoints(center_m, size_m, rotation);
     addAnnotationBoxToImage(points);
@@ -73,30 +67,27 @@ function setBox3() {
     const center_m = new THREE.Vector3(4.8, 0.0, 7.44);
     const size_m = new THREE.Vector3(0.3, 1.2, 0.6);
     const rotation = new Rotation(0.0, 0.0, 0);
-    const box = createBox(center_m, size_m, rotation);
-    addAnnotationBoxTo3dSpace(box);
+    addBoxToGroup(center_m, size_m, rotation);
     
     const points = createLinePoints(center_m, size_m, rotation);
     addAnnotationBoxToImage(points);
 }
 
-const annotationBoxes = new Array<THREE.Mesh>;
-function createBox(center_m: THREE.Vector3, size_m: THREE.Vector3, rotation: Rotation) {
+function addBoxToGroup(center_m: THREE.Vector3, size_m: THREE.Vector3, rotation: Rotation) {
     const geometry = new THREE.BoxGeometry(size_m.x, size_m.y, size_m.z);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ffff,transparent:true,opacity:0.4 });
     const box = new THREE.Mesh(geometry, material);
     box.position.set(center_m.x, center_m.y + size_m.y / 2, center_m.z);
     box.setRotationFromEuler(rotation.euler);
-    box.name = "box-" + annotationBoxes.length;
-
-    annotationBoxes.push(box);
+    box.name = "box-" + groupBox.children.length;
+    groupBox.add(box);
 
     return box;
 
     function debug() {
         let str = "";
-        for (let index = 0; index < annotationBoxes.length; index++) {
-            const annotationBox = annotationBoxes[index];
+        for (let index = 0; index < groupBox.children.length; index++) {
+            const annotationBox = groupBox.children[index];
             str += annotationBox.name + " : (" + annotationBox.position.x + ", " + annotationBox.position.y + ", " + annotationBox.position.z + ")\n";
             text.value = str;
         }
