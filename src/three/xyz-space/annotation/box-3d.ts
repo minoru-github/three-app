@@ -5,10 +5,6 @@ import { addAnnotationBoxToImage } from "../../rgb-image/annotated-box";
 
 import { text } from "../../../html/element";
 
-const groupBox = new THREE.Group;
-groupBox.name = "annotatedBoxes";
-get3dSpaceSceneInstance().add(groupBox);
-
 // TODO: クリックでアノテボックス配置
 document.addEventListener('mousedown', addAnnotationBox, false);
 function addAnnotationBox(event: MouseEvent) {
@@ -74,21 +70,22 @@ function setBox3() {
     addAnnotationBoxToImage(points);
 }
 
+export const annotatedBoxes = new Array<THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>>;
 function addBoxToGroup(center_m: THREE.Vector3, size_m: THREE.Vector3, rotation: Rotation) {
     const geometry = new THREE.BoxGeometry(size_m.x, size_m.y, size_m.z);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ffff,transparent:true,opacity:0.4 });
     const box = new THREE.Mesh(geometry, material);
     box.position.set(center_m.x, center_m.y + size_m.y / 2, center_m.z);
     box.setRotationFromEuler(rotation.euler);
-    box.name = "box-" + groupBox.children.length;
-    groupBox.add(box);
+    box.name = "annotatedBox";
+    annotatedBoxes.push(box);
 
-    return box;
+    get3dSpaceSceneInstance().add(box);
 
     function debug() {
         let str = "";
-        for (let index = 0; index < groupBox.children.length; index++) {
-            const annotationBox = groupBox.children[index];
+        for (let index = 0; index < annotatedBoxes.length; index++) {
+            const annotationBox = annotatedBoxes[index];
             str += annotationBox.name + " : (" + annotationBox.position.x + ", " + annotationBox.position.y + ", " + annotationBox.position.z + ")\n";
             text.value = str;
         }

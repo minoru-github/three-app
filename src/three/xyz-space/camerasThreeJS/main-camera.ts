@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Scene } from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { annotatedBoxes } from '../annotation/box-3d';
 
 const canvas = document.getElementById("mainCameraCanvas") as HTMLCanvasElement;
 
@@ -38,21 +39,30 @@ function handleMouseMove(event: any) {
 const raycaster = new THREE.Raycaster();
 
 export function tickMainCamera(scene: Scene) {
-    // レイキャスト = マウス位置からまっすぐに伸びる光線ベクトルを生成
-    raycaster.setFromCamera(mouse, cameraThreeJS);
-
-    scene.children.forEach(object => {
-        if (object.name == "annotatedBoxes" && object.children.length > 0) {
-            // その光線とぶつかったオブジェクトを得る
-            const intersects = raycaster.intersectObject(object);
-
-            if (intersects.length > 0) {
-                intersects.forEach(element => {
-                    console.log(element, intersects.length);
-                });
+    // TODO: 処理の場所変更
+    const changeColorOfClickedBox = () => {
+        raycaster.setFromCamera(mouse, cameraThreeJS);
+        const intersects = raycaster.intersectObjects(scene.children);
+        let object: THREE.Object3D<THREE.Event> | undefined = undefined;
+        for (let index = 0; index < intersects.length; index++) {
+            const id = intersects[index].object.id;
+            const intersect = scene.getObjectById(id);
+            if (intersect?.name == "annotatedBox") {
+                object = intersect;
+                break;
             }
         }
-    });
+
+        annotatedBoxes.forEach(box => {
+            if (object != undefined && box.id == object.id) {
+                box.material.color = new THREE.Color(0xff0000);
+            } else {
+                box.material.color = new THREE.Color(0x00ffff);
+            }
+        });
+    }
+
+    changeColorOfClickedBox();
 
     controls.update();
     renderer.render(scene, cameraThreeJS);
