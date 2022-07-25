@@ -6,6 +6,7 @@ import { addAnnotationBoxToImage } from "../../rgb-image/annotated-box";
 import { text } from "../../../html/element";
 
 const groupBox = new THREE.Group;
+groupBox.name = "annotatedBoxes";
 get3dSpaceSceneInstance().add(groupBox);
 
 // TODO: クリックでアノテボックス配置
