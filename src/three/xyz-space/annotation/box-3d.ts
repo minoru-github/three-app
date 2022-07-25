@@ -4,44 +4,18 @@ import { get3dSpaceSceneInstance } from "../xyz-space";
 import { addAnnotationBoxToImage } from "../../rgb-image/annotated-box";
 
 import { text } from "../../../html/element";
-
-// 箱を作成(デバッグ用)
-let boxId = 0;
-const annotationBoxes = new Array<THREE.Mesh>;
-function addAnnotationBoxTo3dSpace(points: THREE.Vector3[]) {
-    const material = new THREE.LineBasicMaterial({ color: 0x00FFFF });
-    const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    geometry.name = "annotation";
-    const line = new THREE.Line(geometry, material);
-    get3dSpaceSceneInstance().add(line);
-
-    function debug() {
-        let str = "";
-        for (let index = 0; index < annotationBoxes.length; index++) {
-            const annotationBox = annotationBoxes[index];
-            str += annotationBox.name + " : (" + annotationBox.position.x + ", " + annotationBox.position.y + ", " + annotationBox.position.z + ")\n";
-            text.value = str;
-        }
-    }
-}
-
-// TODO: クリックでアノテボックス配置
-document.addEventListener('mousedown', addAnnotationBox, false);
-function addAnnotationBox(event: MouseEvent) {
-    // X座標
-    let x = event.offsetX;
-    let y = event.offsetY;
-    // console.log("(w,h) = (%d, %d)", canvas.width, canvas.height);
-    // console.log("offset (x,y) = (%d, %d)", event.offsetX, event.offsetY);
-    // console.log("client (x,y) = (%d, %d)", event.clientX, event.clientY);
-    // console.log(event);
-}
+import { Camera, Scene } from "three";
 
 function setBox() {
     // TODO: 右手座標系から左手座標系に変える
     console.log(box3d.rotation.euler);
-    const points = createLinePoints(box3d.center_m, box3d.size_m, box3d.rotation);
-    addAnnotationBoxTo3dSpace(points);
+    const center_m = box3d.center_m;
+    const size_m = box3d.size_m;
+    const rotation = box3d.rotation;
+
+    addBoxToGroup(center_m, size_m, rotation);
+
+    const points = createLinePoints(center_m, size_m, rotation);
     addAnnotationBoxToImage(points);
 }
 
@@ -49,8 +23,9 @@ function setBox0() {
     const center_m = new THREE.Vector3(4.65, -0.1, 13.67);
     const size_m = new THREE.Vector3(1.8, 1.9, 4.4);
     const rotation = new Rotation(0.0, 32.0, 0);
+    addBoxToGroup(center_m, size_m, rotation);
+
     const points = createLinePoints(center_m, size_m, rotation);
-    addAnnotationBoxTo3dSpace(points);
     addAnnotationBoxToImage(points);
 }
 
@@ -58,8 +33,9 @@ function setBox1() {
     const center_m = new THREE.Vector3(-1.65, 0.0, 5.97);
     const size_m = new THREE.Vector3(0.6, 1.75, 1.6);
     const rotation = new Rotation(0.0, 6.0, 0);
+    addBoxToGroup(center_m, size_m, rotation);
+
     const points = createLinePoints(center_m, size_m, rotation);
-    addAnnotationBoxTo3dSpace(points);
     addAnnotationBoxToImage(points);
 }
 
@@ -67,8 +43,9 @@ function setBox2() {
     const center_m = new THREE.Vector3(-6.3, 0.0, 8.7);
     const size_m = new THREE.Vector3(0.6, 1.68, 1.0);
     const rotation = new Rotation(0.0, 35.0, 0);
+    addBoxToGroup(center_m, size_m, rotation);
+
     const points = createLinePoints(center_m, size_m, rotation);
-    addAnnotationBoxTo3dSpace(points);
     addAnnotationBoxToImage(points);
 }
 
@@ -76,9 +53,32 @@ function setBox3() {
     const center_m = new THREE.Vector3(4.8, 0.0, 7.44);
     const size_m = new THREE.Vector3(0.3, 1.2, 0.6);
     const rotation = new Rotation(0.0, 0.0, 0);
+    addBoxToGroup(center_m, size_m, rotation);
+    
     const points = createLinePoints(center_m, size_m, rotation);
-    addAnnotationBoxTo3dSpace(points);
     addAnnotationBoxToImage(points);
+}
+
+const annotatedBoxes = new Array<THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>>;
+function addBoxToGroup(center_m: THREE.Vector3, size_m: THREE.Vector3, rotation: Rotation) {
+    const geometry = new THREE.BoxGeometry(size_m.x, size_m.y, size_m.z);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ffff,transparent:true,opacity:0.4 });
+    const box = new THREE.Mesh(geometry, material);
+    box.position.set(center_m.x, center_m.y + size_m.y / 2, center_m.z);
+    box.setRotationFromEuler(rotation.euler);
+    box.name = "annotatedBox";
+    annotatedBoxes.push(box);
+
+    get3dSpaceSceneInstance().add(box);
+
+    function debug() {
+        let str = "";
+        for (let index = 0; index < annotatedBoxes.length; index++) {
+            const annotationBox = annotatedBoxes[index];
+            str += annotationBox.name + " : (" + annotationBox.position.x + ", " + annotationBox.position.y + ", " + annotationBox.position.z + ")\n";
+            text.value = str;
+        }
+    }
 }
 
 function createLinePoints(center: THREE.Vector3, size: THREE.Vector3, rotation: Rotation) {
@@ -188,3 +188,56 @@ export const box3d = {
     set3: function () { setBox3() },
 }
 
+// TODO: クリックでアノテボックス配置
+document.addEventListener('mousedown', addAnnotationBox, false);
+function addAnnotationBox(event: MouseEvent) {
+    // X座標
+    let x = event.offsetX;
+    let y = event.offsetY;
+    // console.log("(w,h) = (%d, %d)", canvas.width, canvas.height);
+    // console.log("offset (x,y) = (%d, %d)", event.offsetX, event.offsetY);
+    // console.log("client (x,y) = (%d, %d)", event.clientX, event.clientY);
+    // console.log(event);
+}
+
+const mainCameraCanvas = document.getElementById("mainCameraCanvas") as HTMLCanvasElement;
+mainCameraCanvas.addEventListener('mousemove', handleMouseMove);
+// マウス座標管理用のベクトルを作成
+const mouse = new THREE.Vector2();
+// マウスを動かしたときのイベント
+function handleMouseMove(event: any) {
+    const element = event.currentTarget;
+    // canvas要素上のXY座標
+    const x_pix = event.offsetX;
+    const y_pix = event.offsetY;
+    // canvas要素の幅・高さ
+    const width_pix = element.offsetWidth;
+    const height_pix = element.offsetHeight;
+
+    // -1〜+1の範囲で現在のマウス座標を登録する
+    mouse.x = (x_pix / width_pix) * 2 - 1;
+    mouse.y = 1 - (y_pix / height_pix) * 2;
+}
+
+const raycaster = new THREE.Raycaster();
+export const changeColorOfClickedBox = (scene:Scene, camera:Camera) => {
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(scene.children);
+    let object: THREE.Object3D<THREE.Event> | undefined = undefined;
+    for (let index = 0; index < intersects.length; index++) {
+        const id = intersects[index].object.id;
+        const intersect = scene.getObjectById(id);
+        if (intersect?.name == "annotatedBox") {
+            object = intersect;
+            break;
+        }
+    }
+
+    annotatedBoxes.forEach(box => {
+        if (object != undefined && box.id == object.id) {
+            box.material.color = new THREE.Color(0xff0000);
+        } else {
+            box.material.color = new THREE.Color(0x00ffff);
+        }
+    });
+}
