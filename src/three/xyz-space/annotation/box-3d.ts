@@ -4,18 +4,7 @@ import { get3dSpaceSceneInstance } from "../xyz-space";
 import { addAnnotationBoxToImage } from "../../rgb-image/annotated-box";
 
 import { text } from "../../../html/element";
-
-// TODO: クリックでアノテボックス配置
-document.addEventListener('mousedown', addAnnotationBox, false);
-function addAnnotationBox(event: MouseEvent) {
-    // X座標
-    let x = event.offsetX;
-    let y = event.offsetY;
-    // console.log("(w,h) = (%d, %d)", canvas.width, canvas.height);
-    // console.log("offset (x,y) = (%d, %d)", event.offsetX, event.offsetY);
-    // console.log("client (x,y) = (%d, %d)", event.clientX, event.clientY);
-    // console.log(event);
-}
+import { Camera, Scene } from "three";
 
 function setBox() {
     // TODO: 右手座標系から左手座標系に変える
@@ -70,7 +59,7 @@ function setBox3() {
     addAnnotationBoxToImage(points);
 }
 
-export const annotatedBoxes = new Array<THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>>;
+const annotatedBoxes = new Array<THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>>;
 function addBoxToGroup(center_m: THREE.Vector3, size_m: THREE.Vector3, rotation: Rotation) {
     const geometry = new THREE.BoxGeometry(size_m.x, size_m.y, size_m.z);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ffff,transparent:true,opacity:0.4 });
@@ -199,3 +188,56 @@ export const box3d = {
     set3: function () { setBox3() },
 }
 
+// TODO: クリックでアノテボックス配置
+document.addEventListener('mousedown', addAnnotationBox, false);
+function addAnnotationBox(event: MouseEvent) {
+    // X座標
+    let x = event.offsetX;
+    let y = event.offsetY;
+    // console.log("(w,h) = (%d, %d)", canvas.width, canvas.height);
+    // console.log("offset (x,y) = (%d, %d)", event.offsetX, event.offsetY);
+    // console.log("client (x,y) = (%d, %d)", event.clientX, event.clientY);
+    // console.log(event);
+}
+
+const mainCameraCanvas = document.getElementById("mainCameraCanvas") as HTMLCanvasElement;
+mainCameraCanvas.addEventListener('mousemove', handleMouseMove);
+// マウス座標管理用のベクトルを作成
+const mouse = new THREE.Vector2();
+// マウスを動かしたときのイベント
+function handleMouseMove(event: any) {
+    const element = event.currentTarget;
+    // canvas要素上のXY座標
+    const x_pix = event.offsetX;
+    const y_pix = event.offsetY;
+    // canvas要素の幅・高さ
+    const width_pix = element.offsetWidth;
+    const height_pix = element.offsetHeight;
+
+    // -1〜+1の範囲で現在のマウス座標を登録する
+    mouse.x = (x_pix / width_pix) * 2 - 1;
+    mouse.y = 1 - (y_pix / height_pix) * 2;
+}
+
+const raycaster = new THREE.Raycaster();
+export const changeColorOfClickedBox = (scene:Scene, camera:Camera) => {
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(scene.children);
+    let object: THREE.Object3D<THREE.Event> | undefined = undefined;
+    for (let index = 0; index < intersects.length; index++) {
+        const id = intersects[index].object.id;
+        const intersect = scene.getObjectById(id);
+        if (intersect?.name == "annotatedBox") {
+            object = intersect;
+            break;
+        }
+    }
+
+    annotatedBoxes.forEach(box => {
+        if (object != undefined && box.id == object.id) {
+            box.material.color = new THREE.Color(0xff0000);
+        } else {
+            box.material.color = new THREE.Color(0x00ffff);
+        }
+    });
+}
