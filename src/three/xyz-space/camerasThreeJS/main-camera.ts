@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Scene } from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import { changeColorOfClickedBox } from '../annotation/box-3d';
+import { searchBoxAtCursor } from '../annotation/box-3d';
 
 const canvas = document.getElementById("mainCameraCanvas") as HTMLCanvasElement;
 
@@ -18,7 +18,7 @@ const controls = new OrbitControls(cameraThreeJS, canvas);
 controls.maxPolarAngle = Math.PI / 2;
 
 export function tickMainCamera(scene: Scene) {
-    changeColorOfClickedBox(scene,cameraThreeJS);
+    searchBoxAtCursor(scene,cameraThreeJS);
 
     controls.update();
     renderer.render(scene, cameraThreeJS);

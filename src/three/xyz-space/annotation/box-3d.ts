@@ -202,9 +202,9 @@ function addAnnotationBox(event: MouseEvent) {
 
 const mainCameraCanvas = document.getElementById("mainCameraCanvas") as HTMLCanvasElement;
 mainCameraCanvas.addEventListener('mousemove', handleMouseMove);
-// マウス座標管理用のベクトルを作成
+mainCameraCanvas.addEventListener('mousedown', handleMouseDown);
+
 const mouse = new THREE.Vector2();
-// マウスを動かしたときのイベント
 function handleMouseMove(event: any) {
     const element = event.currentTarget;
     // canvas要素上のXY座標
@@ -219,11 +219,22 @@ function handleMouseMove(event: any) {
     mouse.y = 1 - (y_pix / height_pix) * 2;
 }
 
+let object: THREE.Object3D<THREE.Event> | undefined = undefined;
+function handleMouseDown(event: any) {
+    annotatedBoxes.forEach(box => {
+        if (object != undefined && box.id == object.id) {
+            box.material.opacity = 0.8;
+        } else {
+            box.material.opacity = 0.4;
+        }
+    });
+}
+
 const raycaster = new THREE.Raycaster();
-export const changeColorOfClickedBox = (scene:Scene, camera:Camera) => {
+export const searchBoxAtCursor = (scene:Scene, camera:Camera) => {
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(scene.children);
-    let object: THREE.Object3D<THREE.Event> | undefined = undefined;
+    object = undefined;
     for (let index = 0; index < intersects.length; index++) {
         const id = intersects[index].object.id;
         const intersect = scene.getObjectById(id);
@@ -232,12 +243,4 @@ export const changeColorOfClickedBox = (scene:Scene, camera:Camera) => {
             break;
         }
     }
-
-    annotatedBoxes.forEach(box => {
-        if (object != undefined && box.id == object.id) {
-            box.material.color = new THREE.Color(0xff0000);
-        } else {
-            box.material.color = new THREE.Color(0x00ffff);
-        }
-    });
 }
