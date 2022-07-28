@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-import { get3dSpaceSceneInstance } from "../xyz-space";
+import { sceneXyz } from "../xyz-space";
 import { addAnnotationBoxToImage } from "../../rgb-image/annotated-box";
 
 import { text } from "../../../html/element";
@@ -69,7 +69,7 @@ function addBoxToGroup(center_m: THREE.Vector3, size_m: THREE.Vector3, rotation:
     box.name = "annotatedBox";
     annotatedBoxes.push(box);
 
-    get3dSpaceSceneInstance().add(box);
+    sceneXyz.add(box);
 
     function debug() {
         let str = "";
@@ -202,9 +202,9 @@ function addAnnotationBox(event: MouseEvent) {
 
 const mainCameraCanvas = document.getElementById("mainCameraCanvas") as HTMLCanvasElement;
 mainCameraCanvas.addEventListener('mousemove', handleMouseMove);
-// マウス座標管理用のベクトルを作成
+mainCameraCanvas.addEventListener('mousedown', handleMouseDown);
+
 const mouse = new THREE.Vector2();
-// マウスを動かしたときのイベント
 function handleMouseMove(event: any) {
     const element = event.currentTarget;
     // canvas要素上のXY座標
@@ -219,25 +219,29 @@ function handleMouseMove(event: any) {
     mouse.y = 1 - (y_pix / height_pix) * 2;
 }
 
+export let intersectedObject: THREE.Object3D<THREE.Event> | undefined = undefined;
+function handleMouseDown(event: any) {
+    annotatedBoxes.forEach(box => {
+        if (intersectedObject != undefined && box.id == intersectedObject.id) {
+            box.material.opacity = 0.8;
+            console.log(intersectedObject.position);
+        } else {
+            box.material.opacity = 0.4;
+        }
+    });
+}
+
 const raycaster = new THREE.Raycaster();
-export const changeColorOfClickedBox = (scene:Scene, camera:Camera) => {
+export const searchBoxAtCursor = (scene:Scene, camera:Camera) => {
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(scene.children);
-    let object: THREE.Object3D<THREE.Event> | undefined = undefined;
+    intersectedObject = undefined;
     for (let index = 0; index < intersects.length; index++) {
         const id = intersects[index].object.id;
         const intersect = scene.getObjectById(id);
         if (intersect?.name == "annotatedBox") {
-            object = intersect;
+            intersectedObject = intersect;
             break;
         }
     }
-
-    annotatedBoxes.forEach(box => {
-        if (object != undefined && box.id == object.id) {
-            box.material.color = new THREE.Color(0xff0000);
-        } else {
-            box.material.color = new THREE.Color(0x00ffff);
-        }
-    });
 }
