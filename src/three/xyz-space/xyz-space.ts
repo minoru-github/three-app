@@ -8,9 +8,8 @@ import { tickSideCamera } from './camerasThreeJS/side-camera';
 
 // シーンを作成
 const scene = new THREE.Scene();
-export function get3dSpaceSceneInstance() {
-    return scene;
-}
+export const sceneXyz = scene;
+
 export function addPointsToXyzSpace(points:THREE.Points) {
     scene.add(points);
 }

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { get3dSpaceSceneInstance } from "../xyz-space";
+import { sceneXyz } from "../xyz-space";
 
 export function drawCameraFov(camera_pos: { x_m: number, y_m: number, z_m: number }, fov: { x_rad: number, y_rad: number }) {
     addCameraMeshToScene(camera_pos);
@@ -12,7 +12,7 @@ function addCameraMeshToScene(camera_pos: { x_m: number, y_m: number, z_m: numbe
     const box = new THREE.Mesh(geometry, material);
     box.name = "cameraThreeJS";
     box.position.set(camera_pos.x_m, camera_pos.y_m, camera_pos.z_m);
-    get3dSpaceSceneInstance().add(box);
+    sceneXyz.add(box);
 }
 
 function drawImageArea(camera_pos: { x_m: number, y_m: number, z_m: number }, fov: { x_rad: number, y_rad: number }) {
@@ -49,5 +49,5 @@ function drawImageArea(camera_pos: { x_m: number, y_m: number, z_m: number }, fo
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     geometry.name = "line";
     const line = new THREE.Line(geometry, material);
-    get3dSpaceSceneInstance().add(line);
+    sceneXyz.add(line);
 }
