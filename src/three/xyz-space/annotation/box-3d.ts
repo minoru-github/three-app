@@ -59,7 +59,7 @@ function setBox3() {
     addAnnotationBoxToImage(points);
 }
 
-const annotatedBoxes = new Array<THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>>;
+export const annotatedBoxes = new Array<THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>>;
 function addBoxToGroup(center_m: THREE.Vector3, size_m: THREE.Vector3, rotation: Rotation) {
     const geometry = new THREE.BoxGeometry(size_m.x, size_m.y, size_m.z);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ffff,transparent:true,opacity:0.4 });
@@ -223,7 +223,7 @@ export let intersectedObject: THREE.Object3D<THREE.Event> | undefined = undefine
 function handleMouseDown(event: any) {
     annotatedBoxes.forEach(box => {
         if (intersectedObject != undefined && box.id == intersectedObject.id) {
-            box.material.opacity = 0.8;
+            box.material.opacity = 0.6;
             console.log(intersectedObject.position);
         } else {
             box.material.opacity = 0.4;
