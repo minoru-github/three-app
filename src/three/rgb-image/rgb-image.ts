@@ -1,5 +1,25 @@
+import * as THREE from "three";
+
 import { drawCameraFov } from "../xyz-space/camerasThreeJS/camera-fov";
 
+const scene = new THREE.Scene();
+const canvasLeft = document.getElementById("left_image") as HTMLCanvasElement;
+const rendererLeft = new THREE.WebGLRenderer({
+    canvas: document.querySelector('#left_image') as HTMLCanvasElement
+});
+
+rendererLeft.setClearColor(0xffffff, 1);
+rendererLeft.setSize(canvasLeft.width, canvasLeft.height);
+
+const light = new THREE.AmbientLight(0xffffff);
+scene.add(light);
+export function tickImages() {
+    if (cameraLeft != undefined) {
+        rendererLeft.render(scene, cameraLeft);
+    }
+}
+
+var cameraLeft: THREE.PerspectiveCamera | undefined = undefined;
 class RgbImage {
     data: File[] = new Array();
     sensor_position = {
@@ -53,7 +73,7 @@ class RgbImage {
         if (this.frames < frame || this.data.length == 0) {
             return;
         }
-        drawRgbImages(this.data[frame]);
+        this.drawRgbImages(this.data[frame]);
     }
 
     totalFrames() {
@@ -83,53 +103,78 @@ class RgbImage {
         const { x_pix, y_pix } = projectFromXYZ(x_m, y_m, z_m);
         return { x_pix, y_pix };
     }
-}
 
-function drawRgbImages(file: File) {
-    const result = file.name.match(/left_image|right_image/);
-    if (result == null) {
-        return;
-    }
+    drawRgbImages(file: File) {
+        const result = file.name.match(/left_image|right_image/);
+        if (result == null) {
+            return;
+        }
 
-    const leftOrRight = result[0];
-    if (leftOrRight == "right_image") {
-        drawCameraFov(rightImage.sensor_position,rightImage.fov);
-    } else {
-        drawCameraFov(leftImage.sensor_position, leftImage.fov);
-    }
+        const leftOrRight = result[0];
+        if (leftOrRight == "right_image") {
+            drawCameraFov(rightImage.sensor_position, rightImage.fov);
+        } else {
+            drawCameraFov(leftImage.sensor_position, leftImage.fov);
+        }
 
-    const promise = createDataURL(file);
-    promise.then((path: string) => {
-        setImageToCanvas(path, leftOrRight);
-    })
+        const promise = createDataURL(file);
+        promise.then((path: string) => {
+            //setImageToCanvas(path, leftOrRight);
+            addImage(path, leftOrRight);
+        })
 
-    function createDataURL(file: File) {
-        const promise = new Promise<string>((resolve, reject) => {
-            //FileReaderオブジェクトの作成
-            const reader = new FileReader();
-            // onload = 読み込み完了したときに実行されるイベント
-            reader.onload = (event) => {
-                resolve(event.target?.result as string);
-            };
-            reader.readAsDataURL(file);
-        });
-        return promise;
-    }
+        function createDataURL(file: File) {
+            const promise = new Promise<string>((resolve, reject) => {
+                //FileReaderオブジェクトの作成
+                const reader = new FileReader();
+                // onload = 読み込み完了したときに実行されるイベント
+                reader.onload = (event) => {
+                    resolve(event.target?.result as string);
+                };
+                reader.readAsDataURL(file);
+            });
+            return promise;
+        }
 
-    function setImageToCanvas(path: string, leftOrRight: string) {
-        const image = new Image();
-        image.src = path;
-        image.onload = function () {
-            const canvas = document.getElementById(leftOrRight) as HTMLCanvasElement;
-            let context = canvas.getContext("2d");
-            canvas.width = image.width;
-            canvas.height = image.height;
-            if (context != null) {
-                context.drawImage(image, 0, 0);
+        function setImageToCanvas(path: string, leftOrRight: string) {
+            const image = new Image();
+            image.src = path;
+            image.onload = function () {
+                const canvas = document.getElementById(leftOrRight) as HTMLCanvasElement;
+                let context = canvas.getContext("2d");
+                canvas.width = image.width;
+                canvas.height = image.height;
+                if (context != null) {
+                    context.drawImage(image, 0, 0);
+                }
             }
+        }
+
+        const addImage = (path: string, leftOrRight: string) => {
+            const loader = new THREE.TextureLoader();
+            loader.load(path, (texture) => {
+                const canvas = document.getElementById(leftOrRight) as HTMLCanvasElement;
+                const rate = canvas.height / texture.image.height;
+                const w = texture.image.width * rate;
+                const h = canvas.height;
+
+                const geometry = new THREE.PlaneGeometry(1, 1);
+                const material = new THREE.MeshBasicMaterial({ map: texture });
+                const plane = new THREE.Mesh(geometry, material);
+                plane.scale.set(w, h, 1);
+                scene.add(plane);
+
+                const fovRad = (this.fov.y_rad / 2);
+                const dist = canvas.height / 2 / Math.tan(fovRad);
+                cameraLeft = new THREE.PerspectiveCamera(this.fov.y_deg, canvas.width / canvas.height, 0.01, 1000);
+                cameraLeft.position.z = dist;
+                scene.add(cameraLeft);
+            });
         }
     }
 }
+
+
 
 export const leftImage = new RgbImage();
 export const rightImage = new RgbImage();
