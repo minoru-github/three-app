@@ -1,5 +1,6 @@
 import { tick3dSpace } from './xyz-space/xyz-space';
-import { tickImages } from './rgb-image/rgb-image';
+import { tickLeftImage } from './rgb-image/left-image';
+import { tickRightImage } from './rgb-image/right-image';
 import { initGUI } from './gui/gui';
 
 export function initThreeApp() {
@@ -12,6 +13,7 @@ export function initThreeApp() {
 
         // レンダリング
         tick3dSpace();
-        tickImages();
+        tickLeftImage();
+        tickRightImage();
     }
 }

@@ -1,26 +1,7 @@
 import * as THREE from "three";
-
 import { drawCameraFov } from "../xyz-space/camerasThreeJS/camera-fov";
 
-const scene = new THREE.Scene();
-const canvasLeft = document.getElementById("left_image") as HTMLCanvasElement;
-const rendererLeft = new THREE.WebGLRenderer({
-    canvas: document.querySelector('#left_image') as HTMLCanvasElement
-});
-
-rendererLeft.setClearColor(0xffffff, 1);
-rendererLeft.setSize(canvasLeft.width, canvasLeft.height);
-
-const light = new THREE.AmbientLight(0xffffff);
-scene.add(light);
-export function tickImages() {
-    if (cameraLeft != undefined) {
-        rendererLeft.render(scene, cameraLeft);
-    }
-}
-
-var cameraLeft: THREE.PerspectiveCamera | undefined = undefined;
-class RgbImage {
+export class RgbImage {
     data: File[] = new Array();
     sensor_position = {
         "x_m": 0.0,
@@ -39,9 +20,12 @@ class RgbImage {
         [0.0, 0.0, 0.0, 0.0,],
     ];
     frames: number = 0;
-    constructor() {
+    constructor(scene: THREE.Scene) {
         this.data = new Array<File>();
+        this.scene = scene;
     }
+    scene: THREE.Scene | undefined = undefined;
+    camera: THREE.PerspectiveCamera | undefined = undefined;
 
     addData(file: File) {
         return new Promise<File>((resolve) => {
@@ -111,15 +95,10 @@ class RgbImage {
         }
 
         const leftOrRight = result[0];
-        if (leftOrRight == "right_image") {
-            drawCameraFov(rightImage.sensor_position, rightImage.fov);
-        } else {
-            drawCameraFov(leftImage.sensor_position, leftImage.fov);
-        }
+        drawCameraFov(this.sensor_position, this.fov);
 
         const promise = createDataURL(file);
         promise.then((path: string) => {
-            //setImageToCanvas(path, leftOrRight);
             addImage(path, leftOrRight);
         })
 
@@ -136,20 +115,6 @@ class RgbImage {
             return promise;
         }
 
-        function setImageToCanvas(path: string, leftOrRight: string) {
-            const image = new Image();
-            image.src = path;
-            image.onload = function () {
-                const canvas = document.getElementById(leftOrRight) as HTMLCanvasElement;
-                let context = canvas.getContext("2d");
-                canvas.width = image.width;
-                canvas.height = image.height;
-                if (context != null) {
-                    context.drawImage(image, 0, 0);
-                }
-            }
-        }
-
         const addImage = (path: string, leftOrRight: string) => {
             const loader = new THREE.TextureLoader();
             loader.load(path, (texture) => {
@@ -162,19 +127,15 @@ class RgbImage {
                 const material = new THREE.MeshBasicMaterial({ map: texture });
                 const plane = new THREE.Mesh(geometry, material);
                 plane.scale.set(w, h, 1);
-                scene.add(plane);
+                this.scene?.add(plane);
 
                 const fovRad = (this.fov.y_rad / 2);
                 const dist = canvas.height / 2 / Math.tan(fovRad);
-                cameraLeft = new THREE.PerspectiveCamera(this.fov.y_deg, canvas.width / canvas.height, 0.01, 1000);
-                cameraLeft.position.z = dist;
-                scene.add(cameraLeft);
+
+                this.camera = new THREE.PerspectiveCamera(this.fov.y_deg, canvas.width / canvas.height, 0.01, 1000);
+                this.camera.position.z = dist;
+                this.scene?.add(this.camera);
             });
         }
     }
 }
-
-
-
-export const leftImage = new RgbImage();
-export const rightImage = new RgbImage();
