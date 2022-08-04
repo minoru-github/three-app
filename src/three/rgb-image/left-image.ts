@@ -13,6 +13,7 @@ renderer.setSize(canvas.width, canvas.height);
 const light = new THREE.AmbientLight(0xffffff);
 scene.add(light);
 
+
 const image = new RgbImage(scene);
 export function tickLeftImage() {
     if (image.camera != undefined) {

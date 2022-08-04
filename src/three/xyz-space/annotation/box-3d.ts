@@ -2,6 +2,7 @@ import * as THREE from "three";
 
 import { sceneXyz } from "../xyz-space";
 import { addAnnotationBoxToImage } from "../../rgb-image/annotated-box";
+import { leftImage } from "../../rgb-image/left-image";
 
 import { text } from "../../../html/element";
 import { Camera, Scene } from "three";
@@ -13,59 +14,52 @@ function setBox() {
     const size_m = box3d.size_m;
     const rotation = box3d.rotation;
 
-    addBoxToGroup(center_m, size_m, rotation);
-
-    const points = createLinePoints(center_m, size_m, rotation);
-    addAnnotationBoxToImage(points);
+    addBoxToGroup(center_m, size_m, rotation.euler);
+    leftImage.addAnntotaionBox(center_m, size_m, rotation.euler);
 }
 
 function setBox0() {
     const center_m = new THREE.Vector3(4.65, -0.1, 13.67);
     const size_m = new THREE.Vector3(1.8, 1.9, 4.4);
     const rotation = new Rotation(0.0, 32.0, 0);
-    addBoxToGroup(center_m, size_m, rotation);
 
-    const points = createLinePoints(center_m, size_m, rotation);
-    addAnnotationBoxToImage(points);
+    addBoxToGroup(center_m, size_m, rotation.euler);
+    leftImage.addAnntotaionBox(center_m, size_m, rotation.euler);
 }
 
 function setBox1() {
     const center_m = new THREE.Vector3(-1.65, 0.0, 5.97);
     const size_m = new THREE.Vector3(0.6, 1.75, 1.6);
     const rotation = new Rotation(0.0, 6.0, 0);
-    addBoxToGroup(center_m, size_m, rotation);
 
-    const points = createLinePoints(center_m, size_m, rotation);
-    addAnnotationBoxToImage(points);
+    addBoxToGroup(center_m, size_m, rotation.euler);
+    leftImage.addAnntotaionBox(center_m, size_m, rotation.euler);
 }
 
 function setBox2() {
     const center_m = new THREE.Vector3(-6.3, 0.0, 8.7);
     const size_m = new THREE.Vector3(0.6, 1.68, 1.0);
     const rotation = new Rotation(0.0, 35.0, 0);
-    addBoxToGroup(center_m, size_m, rotation);
 
-    const points = createLinePoints(center_m, size_m, rotation);
-    addAnnotationBoxToImage(points);
+    addBoxToGroup(center_m, size_m, rotation.euler);
+    leftImage.addAnntotaionBox(center_m, size_m, rotation.euler);
 }
 
 function setBox3() {
     const center_m = new THREE.Vector3(4.8, 0.0, 7.44);
     const size_m = new THREE.Vector3(0.3, 1.2, 0.6);
     const rotation = new Rotation(0.0, 0.0, 0);
-    addBoxToGroup(center_m, size_m, rotation);
-    
-    const points = createLinePoints(center_m, size_m, rotation);
-    addAnnotationBoxToImage(points);
+    addBoxToGroup(center_m, size_m, rotation.euler);
+    leftImage.addAnntotaionBox(center_m, size_m, rotation.euler);
 }
 
 export const annotatedBoxes = new Array<THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>>;
-function addBoxToGroup(center_m: THREE.Vector3, size_m: THREE.Vector3, rotation: Rotation) {
+function addBoxToGroup(center_m: THREE.Vector3, size_m: THREE.Vector3, euler: THREE.Euler) {
     const geometry = new THREE.BoxGeometry(size_m.x, size_m.y, size_m.z);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ffff,transparent:true,opacity:0.4 });
     const box = new THREE.Mesh(geometry, material);
     box.position.set(center_m.x, center_m.y + size_m.y / 2, center_m.z);
-    box.setRotationFromEuler(rotation.euler);
+    box.setRotationFromEuler(euler);
     box.name = "annotatedBox";
     annotatedBoxes.push(box);
 
@@ -79,57 +73,6 @@ function addBoxToGroup(center_m: THREE.Vector3, size_m: THREE.Vector3, rotation:
             text.value = str;
         }
     }
-}
-
-function createLinePoints(center: THREE.Vector3, size: THREE.Vector3, rotation: Rotation) {
-    const p0 = new THREE.Vector3(center.x - size.x / 2, center.y, center.z - size.z / 2);
-    const p1 = new THREE.Vector3(center.x - size.x / 2, center.y, center.z + size.z / 2);
-    const p2 = new THREE.Vector3(center.x + size.x / 2, center.y, center.z + size.z / 2);
-    const p3 = new THREE.Vector3(center.x + size.x / 2, center.y, center.z - size.z / 2);
-
-    const p4 = new THREE.Vector3(center.x - size.x / 2, center.y + size.y, center.z - size.z / 2);
-    const p5 = new THREE.Vector3(center.x - size.x / 2, center.y + size.y, center.z + size.z / 2);
-    const p6 = new THREE.Vector3(center.x + size.x / 2, center.y + size.y, center.z + size.z / 2);
-    const p7 = new THREE.Vector3(center.x + size.x / 2, center.y + size.y, center.z - size.z / 2);
-
-    const vertexVec = new Array<THREE.Vector3>;
-    vertexVec.push(p0);
-    vertexVec.push(p1);
-    vertexVec.push(p2);
-    vertexVec.push(p3);
-    vertexVec.push(p4);
-    vertexVec.push(p5);
-    vertexVec.push(p6);
-    vertexVec.push(p7);
-
-    for (let index = 0; index < vertexVec.length; index++) {
-        const vertex = vertexVec[index];
-        vertex.sub(center);
-        vertex.applyEuler(rotation.euler);
-        vertex.add(center);
-    }
-
-    const linePoints = new Array<THREE.Vector3>;
-    linePoints.push(vertexVec[0]);
-    linePoints.push(vertexVec[1]);
-    linePoints.push(vertexVec[2]);
-    linePoints.push(vertexVec[3]);
-    linePoints.push(vertexVec[0]);
-
-    linePoints.push(vertexVec[4]);
-    linePoints.push(vertexVec[5]);
-    linePoints.push(vertexVec[6]);
-    linePoints.push(vertexVec[7]);
-    linePoints.push(vertexVec[4]);
-
-    linePoints.push(vertexVec[5]);
-    linePoints.push(vertexVec[1]);
-    linePoints.push(vertexVec[2]);
-    linePoints.push(vertexVec[6]);
-    linePoints.push(vertexVec[7]);
-    linePoints.push(vertexVec[3]);
-
-    return linePoints;
 }
 
 class Rotation {

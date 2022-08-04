@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+
 import { drawCameraFov } from "../xyz-space/camerasThreeJS/camera-fov";
 
 export class RgbImage {
@@ -135,7 +137,39 @@ export class RgbImage {
                 this.camera = new THREE.PerspectiveCamera(this.fov.y_deg, canvas.width / canvas.height, 0.01, 1000);
                 this.camera.position.z = dist;
                 this.scene?.add(this.camera);
+
+                this.controls = new OrbitControls(this.camera, canvas);
             });
         }
     }
+
+    addAnntotaionBox(center_m: THREE.Vector3, size_m: THREE.Vector3, euler: THREE.Euler) {
+        if (this.camera != undefined && this.scene != undefined) {
+            const rate = this.camera.position.z / center_m.z;
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.4 });
+            const box = new THREE.Mesh(geometry, material);
+            box.scale.set(size_m.x * rate, size_m.y * rate, size_m.z * rate);
+
+            //box.position.set(center_m.x, center_m.y + size_m.y / 2, center_m.z);
+
+            box.position.set(
+                -(center_m.x - this.sensor_position.x_m) * rate,
+                -(center_m.y + size_m.y / 2 - 0.08) * rate,
+                (center_m.z + this.sensor_position.z_m) * rate - this.camera.position.z
+            );
+
+
+            box.setRotationFromEuler(euler);
+            box.name = "annotatedBox";
+            //annotatedBoxes.push(box);
+
+            this.scene.add(box);
+            console.log(this.scene);
+        }
+
+    }
+
+    controls: OrbitControls | undefined = undefined;
+
 }
