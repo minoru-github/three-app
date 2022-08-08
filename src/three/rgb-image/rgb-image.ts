@@ -126,10 +126,13 @@ export class RgbImage {
                 const h = canvas.height;
 
                 const geometry = new THREE.PlaneGeometry(1, 1);
-                const material = new THREE.MeshBasicMaterial({ map: texture });
+                const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 0.4 });
                 const plane = new THREE.Mesh(geometry, material);
-                plane.scale.set(w, h, 1);
+                plane.scale.set(w, h, 0.1);
+
                 this.scene?.add(plane);
+                console.log(this.scene);
+
 
                 const fovRad = (this.fov.y_rad / 2);
                 const dist = canvas.height / 2 / Math.tan(fovRad);
@@ -139,24 +142,32 @@ export class RgbImage {
                 this.scene?.add(this.camera);
 
                 this.controls = new OrbitControls(this.camera, canvas);
+
+                // グリッド追加
+                const gridHelper = new THREE.GridHelper(200, 20);
+                this.scene?.add(gridHelper);
+
+                // 座標軸追加 X軸は赤、Y軸は緑色、Z軸は青。
+                // TODO: 右手座標系から左手座標系に変える
+                const axesHelper = new THREE.AxesHelper(100);
+                this.scene?.add(axesHelper);
             });
         }
     }
 
     addAnntotaionBox(center_m: THREE.Vector3, size_m: THREE.Vector3, euler: THREE.Euler) {
         if (this.camera != undefined && this.scene != undefined) {
-            const rate = this.camera.position.z / center_m.z;
+            // TODO: 頂点ごとにrate設定？
+            const rate = this.camera.position.z / (center_m.z - this.sensor_position.z_m);
             const geometry = new THREE.BoxGeometry(1, 1, 1);
-            const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.4 });
+            const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: false, opacity: 0.4 });
             const box = new THREE.Mesh(geometry, material);
             box.scale.set(size_m.x * rate, size_m.y * rate, size_m.z * rate);
 
-            //box.position.set(center_m.x, center_m.y + size_m.y / 2, center_m.z);
-
             box.position.set(
                 -(center_m.x - this.sensor_position.x_m) * rate,
-                -(center_m.y + size_m.y / 2 - 0.08) * rate,
-                (center_m.z + this.sensor_position.z_m) * rate - this.camera.position.z
+                (center_m.y + size_m.y / 2 - this.sensor_position.y_m) * rate,
+                (center_m.z - this.sensor_position.z_m) * rate - this.camera.position.z 
             );
 
 
@@ -165,11 +176,9 @@ export class RgbImage {
             //annotatedBoxes.push(box);
 
             this.scene.add(box);
-            console.log(this.scene);
         }
 
     }
 
     controls: OrbitControls | undefined = undefined;
-
 }
