@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { depth } from "../xyz-space/depth/depth";
-import { leftImage, rightImage } from "./rgb-image";
+import { leftImage } from "./left-image";
+import { rightImage } from "./right-image";
 
 //let boxId = 0;
 export function addAnnotationBoxToImage(points: THREE.Vector3[]) {

@@ -1,6 +1,9 @@
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+
 import { drawCameraFov } from "../xyz-space/camerasThreeJS/camera-fov";
 
-class RgbImage {
+export class RgbImage {
     data: File[] = new Array();
     sensor_position = {
         "x_m": 0.0,
@@ -19,9 +22,12 @@ class RgbImage {
         [0.0, 0.0, 0.0, 0.0,],
     ];
     frames: number = 0;
-    constructor() {
+    constructor(scene: THREE.Scene) {
         this.data = new Array<File>();
+        this.scene = scene;
     }
+    scene: THREE.Scene | undefined = undefined;
+    camera: THREE.PerspectiveCamera | undefined = undefined;
 
     addData(file: File) {
         return new Promise<File>((resolve) => {
@@ -53,7 +59,7 @@ class RgbImage {
         if (this.frames < frame || this.data.length == 0) {
             return;
         }
-        drawRgbImages(this.data[frame]);
+        this.drawRgbImages(this.data[frame]);
     }
 
     totalFrames() {
@@ -83,53 +89,96 @@ class RgbImage {
         const { x_pix, y_pix } = projectFromXYZ(x_m, y_m, z_m);
         return { x_pix, y_pix };
     }
-}
 
-function drawRgbImages(file: File) {
-    const result = file.name.match(/left_image|right_image/);
-    if (result == null) {
-        return;
-    }
+    drawRgbImages(file: File) {
+        const result = file.name.match(/left_image|right_image/);
+        if (result == null) {
+            return;
+        }
 
-    const leftOrRight = result[0];
-    if (leftOrRight == "right_image") {
-        drawCameraFov(rightImage.sensor_position,rightImage.fov);
-    } else {
-        drawCameraFov(leftImage.sensor_position, leftImage.fov);
-    }
+        const leftOrRight = result[0];
+        drawCameraFov(this.sensor_position, this.fov);
 
-    const promise = createDataURL(file);
-    promise.then((path: string) => {
-        setImageToCanvas(path, leftOrRight);
-    })
+        const promise = createDataURL(file);
+        promise.then((path: string) => {
+            addImage(path, leftOrRight);
+        })
 
-    function createDataURL(file: File) {
-        const promise = new Promise<string>((resolve, reject) => {
-            //FileReaderオブジェクトの作成
-            const reader = new FileReader();
-            // onload = 読み込み完了したときに実行されるイベント
-            reader.onload = (event) => {
-                resolve(event.target?.result as string);
-            };
-            reader.readAsDataURL(file);
-        });
-        return promise;
-    }
+        function createDataURL(file: File) {
+            const promise = new Promise<string>((resolve, reject) => {
+                //FileReaderオブジェクトの作成
+                const reader = new FileReader();
+                // onload = 読み込み完了したときに実行されるイベント
+                reader.onload = (event) => {
+                    resolve(event.target?.result as string);
+                };
+                reader.readAsDataURL(file);
+            });
+            return promise;
+        }
 
-    function setImageToCanvas(path: string, leftOrRight: string) {
-        const image = new Image();
-        image.src = path;
-        image.onload = function () {
-            const canvas = document.getElementById(leftOrRight) as HTMLCanvasElement;
-            let context = canvas.getContext("2d");
-            canvas.width = image.width;
-            canvas.height = image.height;
-            if (context != null) {
-                context.drawImage(image, 0, 0);
-            }
+        const addImage = (path: string, leftOrRight: string) => {
+            const loader = new THREE.TextureLoader();
+            loader.load(path, (texture) => {
+                const canvas = document.getElementById(leftOrRight) as HTMLCanvasElement;
+                const rate = canvas.height / texture.image.height;
+                const w = texture.image.width * rate;
+                const h = canvas.height;
+
+                const geometry = new THREE.PlaneGeometry(1, 1);
+                const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 0.4 });
+                const plane = new THREE.Mesh(geometry, material);
+                plane.scale.set(w, h, 0.1);
+
+                this.scene?.add(plane);
+                console.log(this.scene);
+
+
+                const fovRad = (this.fov.y_rad / 2);
+                const dist = canvas.height / 2 / Math.tan(fovRad);
+
+                this.camera = new THREE.PerspectiveCamera(this.fov.y_deg, canvas.width / canvas.height, 0.01, 1000);
+                this.camera.position.z = dist;
+                this.scene?.add(this.camera);
+
+                this.controls = new OrbitControls(this.camera, canvas);
+
+                // グリッド追加
+                const gridHelper = new THREE.GridHelper(200, 20);
+                this.scene?.add(gridHelper);
+
+                // 座標軸追加 X軸は赤、Y軸は緑色、Z軸は青。
+                // TODO: 右手座標系から左手座標系に変える
+                const axesHelper = new THREE.AxesHelper(100);
+                this.scene?.add(axesHelper);
+            });
         }
     }
-}
 
-export const leftImage = new RgbImage();
-export const rightImage = new RgbImage();
+    addAnntotaionBox(center_m: THREE.Vector3, size_m: THREE.Vector3, euler: THREE.Euler) {
+        if (this.camera != undefined && this.scene != undefined) {
+            // TODO: 頂点ごとにrate設定？
+            const rate = this.camera.position.z / (center_m.z - this.sensor_position.z_m);
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: false, opacity: 0.4 });
+            const box = new THREE.Mesh(geometry, material);
+            box.scale.set(size_m.x * rate, size_m.y * rate, size_m.z * rate);
+
+            box.position.set(
+                -(center_m.x - this.sensor_position.x_m) * rate,
+                (center_m.y + size_m.y / 2 - this.sensor_position.y_m) * rate,
+                (center_m.z - this.sensor_position.z_m) * rate - this.camera.position.z 
+            );
+
+
+            box.setRotationFromEuler(euler);
+            box.name = "annotatedBox";
+            //annotatedBoxes.push(box);
+
+            this.scene.add(box);
+        }
+
+    }
+
+    controls: OrbitControls | undefined = undefined;
+}

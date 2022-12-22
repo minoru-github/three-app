@@ -1,5 +1,6 @@
 import { depth } from "../xyz-space/depth/depth";
-import { leftImage, rightImage } from "../rgb-image/rgb-image";
+import { leftImage } from "../rgb-image/left-image";
+import { rightImage } from "../rgb-image/right-image";
 
 export function onChangeInputFiles(event: any) {
     let files = event.target.files as FileList;
